@@ -14,6 +14,7 @@ class AJAX{
 	// \___/\____/_/ /_/____/\__/\__,_/_/ /_/\__/____/  
 	const PARSE_SITE  = 'http://www.tirerack.com/survey/ValidationServlet';
 	const RESULTS_URL = 'http://www.tirerack.com/wheels/results.jsp';
+	const SITE        = 'http://www.tirerack.com';
 
 	//                    __  __              __    
 	//    ____ ___  ___  / /_/ /_  ____  ____/ /____
@@ -67,40 +68,36 @@ class AJAX{
 		$dom->loadHTML($html);
 		$xpath     = new DOMXPath($dom);
 		$blocks    = $xpath->query(".//*[@class='maincontainer']");
+		$index     = 0;
 
 		foreach ($blocks as $block) 
 		{
 			$block_dom->loadHTML($block->ownerDocument->saveHTML($block));
-			$block_x     = new DOMXPath($block_dom);
-			$wheel       = $block_x->query(".//*[@class='maincontainer']/div[1]/div[@class='imagelinks']/a/img");
-			$logo        = $block_x->query(".//*[@class='maincontainer']/div[1]/p/a/img");
-			$description = $block_x->query(".//*[@class='maincontainer']/div[1]/h4/a");
-			$cat_tabs    = $block_x->query(".//*[@class='maincontainer']/ul[@class='cat-tabs']");
-			$wheel_info  = $block_x->query(".//*[@class='maincontainer']/div[@class='wheelInfo']");
+			$block_x         = new DOMXPath($block_dom);
+			$wheel           = $block_x->query(".//*[@class='maincontainer']/div[1]/div[@class='imagelinks']/a/img");
+			$logo            = $block_x->query(".//*[@class='maincontainer']/div[1]/p/a/img");
+			$description     = $block_x->query(".//*[@class='maincontainer']/div[1]/h4/a");
+			$cat_tabs        = $block_x->query(".//*[@class='maincontainer']/ul[@class='cat-tabs']");
+			$wheel_info      = $block_x->query(".//*[@class='maincontainer']/div[@class='wheelInfo']");
+			$view_on_vehicle = $block_x->query(".//*[@class='maincontainer']/div[@class='wheelInfo']/div[@class='btmBTNContainer']/div[@class='vovDetailLinks']/div[1]/a");
+			$text            = $block_x->query(".//*[@class='maincontainer']/div[1]/h4");
+
+			$text = $text->item(0)->ownerDocument->saveHTML($text->item(0));
+			$text = preg_replace('/<a.*?<\/a>/', '', $text);
+			$text = trim(str_replace(array('<br>', '<h4>', '</h4>'), '', $text));
 
 			$items[] = array(
+				'index'           => $index++,
 				'wheel_img'       => $wheel->item(0)->getAttribute('src'),
 				'logo_img'        => $logo->item(0)->getAttribute('src'),
 				'cat_tabs_html'   => $cat_tabs->item(0)->ownerDocument->saveHTML($cat_tabs->item(0)),
-				'wheel_info_html' => $cat_tabs->item(0)->ownerDocument->saveHTML($cat_tabs->item(0)),
+				'wheel_info_html' => $wheel_info->item(0)->ownerDocument->saveHTML($wheel_info->item(0)),
+				'view_on_vehicle' => $view_on_vehicle->item(0)->getAttribute('href'),
+				'text'			  => $text,
 				'description'     => array(
 					'href'      => $description->item(0)->getAttribute('href'),
 					'value'     => $description->item(0)->nodeValue));
 		}
-
-
-		// $x_logos_img  = $xpath->query(".//*[@class='maincontainer']/div[1]/p/a/img");
-		// $x_urls       = $xpath->query(".//*[@class='maincontainer']/div[1]/h4/a");
-		
-		// for ($i=0; $i < $x_wheels_img->length; $i++) 
-		// { 
-		// 	$items[] = array(
-		// 		'wheel_img' => $x_wheels_img->item($i)->getAttribute('src'),
-		// 		'logo_img'  => $x_logos_img->item($i)->getAttribute('src'),
-		// 		'href'      => $x_urls->item($i)->getAttribute('href'),
-		// 		'value'     => $x_urls->item($i)->nodeValue);
-		// 	var_dump($x_wheels_img->item($i)->ownerDocument->saveHTML($x_wheels_img->item($i)));
-		// }
 		echo json_encode($items);
 	}
 

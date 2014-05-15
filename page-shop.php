@@ -13,7 +13,8 @@ get_header();
 <div id="content_wrap">   
     <div class="row">
         <div id="content_full" class="editable span12 center none">            
-            <form action="#" method="post" class="controls-block">
+            <form action="<?php echo get_permalink(); ?>" method="get" class="controls-block">
+                <input type="hidden" name="action" value="resultsToDisplay">
                 <section class="radio">
                     <div class="row-fluid">
                         <div class="span6">
@@ -38,11 +39,11 @@ get_header();
                             <!-- Select make -->
                             <div class="row-fluid">
                                 <div class="span4">
-                                    <label for="select_make"><?php _e('Select make'); ?>:</label>
+                                    <label for="autoMake"><?php _e('Select make'); ?>:</label>
                                 </div>
                                 <div class="span8">
-                                    <select name="select_make" id="select_make">
-                                        <option selected="" value="#">Select Make</option>
+                                    <select name="autoMake" id="autoMake">
+                                        <option selected="" value="">Select Make</option>
                                         <option value="Acura">Acura</option>
                                         <option value="Alfa">Alfa</option>
                                         <option value="American Motors">American Motors</option>
@@ -128,12 +129,12 @@ get_header();
                             <!-- Year -->
                             <div class="row-fluid">
                                 <div class="span4">
-                                    <label for="year"><?php _e('Year'); ?>:</label>
+                                    <label for="autoYear"><?php _e('Year'); ?>:</label>
                                 </div>
                                 <div class="span8">
                                     <?php 
                                         $years = array('Select make'); 
-                                        echo $GLOBALS['shop']->getSelectControl('year', $years); 
+                                        echo $GLOBALS['shop']->getSelectControl('autoYear', $years); 
                                     ?>                                  
                                 </div>
                             </div>
@@ -143,12 +144,12 @@ get_header();
                             <!-- Model-->
                             <div class="row-fluid">
                                 <div class="span4">
-                                    <label for="model"><?php _e('Model'); ?>:</label>
+                                    <label for="autoModel"><?php _e('Model'); ?>:</label>
                                 </div>
                                 <div class="span8">
                                     <?php 
                                         $years = array('Select year'); 
-                                        echo $GLOBALS['shop']->getSelectControl('model', $years); 
+                                        echo $GLOBALS['shop']->getSelectControl('autoModel', $years); 
                                     ?>       
                                 </div>
                             </div>
@@ -157,12 +158,12 @@ get_header();
                             <!-- Additional -->
                             <div class="row-fluid">
                                 <div class="span4">
-                                    <label for="additional"><?php _e('Additional'); ?>:</label>
+                                    <label for="autoModClar"><?php _e('Additional'); ?>:</label>
                                 </div>
                                 <div class="span8">
                                     <?php 
                                         $years = array('Select model'); 
-                                        echo $GLOBALS['shop']->getSelectControl('additional', $years); 
+                                        echo $GLOBALS['shop']->getSelectControl('autoModClar', $years); 
                                     ?> 
                                 </div>
                             </div>
@@ -257,6 +258,14 @@ get_header();
 
                 <div class="right-content">
                     <table class="main-table">
+                        <tbody>
+                            <?php 
+                                $items = $GLOBALS['shop']->getResults();
+                                echo $GLOBALS['shop']->wrapItems($items);
+                            ?>
+                        </tbody>
+                    </table>
+                    <!-- <table class="main-table">
                         <tbody>
                             <tr>
                                 <td>
@@ -393,7 +402,7 @@ get_header();
                                 </td>
                             </tr>
                         </tbody>
-                    </table>  
+                    </table>   -->
                     <!-- /.main-table -->
                     <div class="footer">
                         <a href="#" class="link"><b>View all 266 wheels</b></a> | <label for="select-page">View per Page:</label>
