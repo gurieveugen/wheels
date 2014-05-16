@@ -124,20 +124,15 @@ jQuery(document).ready(function(){
 		window.open(jQuery(this).attr('href'), 'popUp', 'width=700, height=495, scrollbars=1, resizable=1');
 		e.preventDefault();
 	});
-	
-});
-
-function initAfterLoad()
-{
 	// =========================================================
 	// ADDITIONAL INFO OPEN MODAL
 	// =========================================================
-	jQuery('.bock-open').click(function(e){		
+	jQuery('.block-open').click(function(e){		
 		jQuery(jQuery(this).attr('href')).modal();
 		e.preventDefault();
 	});
-}
-
+	
+});
 /**
  * Wrap one result item
  * @param  JSON json --- one result items

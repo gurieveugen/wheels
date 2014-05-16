@@ -1306,29 +1306,3 @@ margin-left: 13px;
 position: absolute;
 margin-top: 25px;
 }
-
-/* ________________ 
-  / ____/ ____/ __ \
- / / __/ __/ / / / /
-/ /_/ / /___/ /_/ / 
-\____/_____/\____/  
-                    */
-.btn-shop:hover{
-  padding: 4px 12px;
-  font-size: 14px;
-  background-position: 0;
-  display: block;
-}
-
-.modal .footer{
-  width: 100%;
-}
-
-.modal .footer .right{
-  float: right;
-}
-
-.not-found{
-  width: 500px;
-  margin: 70px auto;
-}

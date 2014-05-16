@@ -1,6 +1,14 @@
 <?php
 
 class Shop{
+	//                          __              __      
+	//   _________  ____  _____/ /_____ _____  / /______
+	//  / ___/ __ \/ __ \/ ___/ __/ __ `/ __ \/ __/ ___/
+	// / /__/ /_/ / / / (__  ) /_/ /_/ / / / / /_(__  ) 
+	// \___/\____/_/ /_/____/\__/\__,_/_/ /_/\__/____/  
+	const SESSION_URL = 'http://www.tirerack.com/wheels/results.jsp?%s';
+	const WHEELS_URL  = 'http://www.tirerack.com/wheels/WheelGridControlServlet?%s';
+	const CACHE_ON    = TRUE;
 	//                                       __  _          
 	//     ____  _________  ____  ___  _____/ /_(_)__  _____
 	//    / __ \/ ___/ __ \/ __ \/ _ \/ ___/ __/ / _ \/ ___/
@@ -8,6 +16,7 @@ class Shop{
 	//  / .___/_/   \____/ .___/\___/_/   \__/_/\___/____/  
 	// /_/              /_/                                 
 	public $view_all;
+	public $filter_fields;
 	//                    __  __              __    
 	//    ____ ___  ___  / /_/ /_  ____  ____/ /____
 	//   / __ `__ \/ _ \/ __/ __ \/ __ \/ __  / ___/
@@ -15,14 +24,13 @@ class Shop{
 	// /_/ /_/ /_/\___/\__/_/ /_/\____/\__,_/____/  
 	public function __construct()
 	{
-		$this->_session_start();		
-		$this->view_all = array(
-			'filterFinish'  => 'All',
-			'filterSize'    => 'All',
-			'filterBrand'   => 'All',
-			'filterSpecial' => 'All',
-			'e&filterNew'   => 'All',
-			'filterWeight'  => 'All');
+		$this->_session_start();	
+		$this->filter_fields = array(
+			'filterSize',
+			'filterFinish',
+			'filterBrand',
+			'filterWeight',
+			'filterNew');;	
 	}
 
 	/**
@@ -31,20 +39,26 @@ class Shop{
 	 */
 	public function getResults()
 	{
-		if(!$_GET) return null;
+		if(!$_GET) return null;		
 		libxml_use_internal_errors(true);
 		unset($_GET['r1']);
-		$_GET      = $this->getInit($_GET);
-		$url       = sprintf('http://www.tirerack.com/wheels/WheelGridControlServlet?%s', http_build_query($_GET));		
+		$cookie    = $this->getCookieSession();
+		$_GET      = $this->getInit($_GET);		
+		$_GET      = $this->_pageToPage($_GET);		
+		$url       = $this->isFiltering($_GET) ? sprintf(self::SESSION_URL, http_build_query($_GET)) : sprintf(self::WHEELS_URL, http_build_query($_GET));
 		$dom       = new DOMDocument();
-		$block_dom = new DOMDocument();		
-		$html      = $this->fileGetContentsCurl($url);		
-		// $html      = file_get_contents($url);	
-		var_dump($url, $html);	
+		$block_dom = new DOMDocument();				
+		$html      = $this->fileGetContentsCurl($url, $cookie, false);
+
 		$dom->loadHTML($html);
-		$xpath     = new DOMXPath($dom);
-		$blocks    = $xpath->query(".//*[@class='maincontainer']");
-		$paging    = $xpath->query(".//*[@id='alloy']/table");
+		
+		$xpath         = new DOMXPath($dom);
+		$blocks        = $xpath->query(".//*[@id='alloy']/div/div[@class='maincontainer']");
+		$paging        = $xpath->query(".//*[@id='alloy']/table");
+		$filter_size   = $xpath->query(".//*[@id='filterSize_id']");
+		$filter_finish = $xpath->query(".//*[@id='filterFinish_id']");
+		$filter_brand  = $xpath->query(".//*[@id='filterBrand_id']");
+		$filter_weight = $xpath->query(".//*[@id='filterWeight_id']");
 		$index     = 0;
 		
 		if(!$blocks->length) return null;
@@ -52,19 +66,26 @@ class Shop{
 
 		$items['paging'] = $paging->item(0)->ownerDocument->saveHTML($paging->item(0));		
 		$items['paging'] = str_replace('/wheels/WheelGridControlServlet', '/shop', $items['paging']);
+		$items['paging'] = preg_replace('/<table.*?>/', '<table width="100%" cellspacing="0" cellpadding="0" class="paging-table">', $items['paging']);
+		$items['paging'] = str_replace('<td align="right">', '<td class="text-right numbers">', $items['paging']);
+		$items['paging'] = $this->pageTo_Page($items['paging']);
+
+		$items['filter_size']   = $filter_size->item(0)->ownerDocument->saveHTML($filter_size->item(0));
+		$items['filter_finish'] = $filter_finish->item(0)->ownerDocument->saveHTML($filter_finish->item(0));
+		$items['filter_brand']  = $filter_brand->item(0)->ownerDocument->saveHTML($filter_brand->item(0));
+		$items['filter_weight'] = $filter_weight->item(0)->ownerDocument->saveHTML($filter_weight->item(0));
 
 		foreach ($blocks as $block) 
 		{
-			$block_dom->loadHTML($block->ownerDocument->saveHTML($block));
+			$block_dom->loadHTML($block->ownerDocument->saveHTML($block));			
 			$block_x         = new DOMXPath($block_dom);
-			$wheel           = $block_x->query(".//*[@class='maincontainer']/div[1]/div[@class='imagelinks']/a/img");
+			$wheel           = $block_x->query(".//*[@class='maincontainer']/div[1]/div[@class='imagelinks']/a/img");			
 			$logo            = $block_x->query(".//*[@class='maincontainer']/div[1]/p/a/img");
 			$description     = $block_x->query(".//*[@class='maincontainer']/div[1]/h4/a");
 			$cat_tabs        = $block_x->query(".//*[@class='maincontainer']/ul[@class='cat-tabs']");
 			$wheel_info      = $block_x->query(".//*[@class='maincontainer']/div[@class='wheelInfo']");
 			$view_on_vehicle = $block_x->query(".//*[@class='maincontainer']/div[@class='wheelInfo']/div[@class='btmBTNContainer']/div[@class='vovDetailLinks']/div[1]/a");
 			$text            = $block_x->query(".//*[@class='maincontainer']/div[1]/h4");
-			$paging          = $block_x->query(".//*[@id='alloy']/table");
 
 			$text = $text->item(0)->ownerDocument->saveHTML($text->item(0));
 			$text = preg_replace('/<a.*?<\/a>/', '', $text);
@@ -72,20 +93,134 @@ class Shop{
 
 			$items[] = array(
 				'index'           => $index++,
-				'wheel_img'       => $wheel->item(0)->getAttribute('src'),
-				'logo_img'        => $logo->item(0)->getAttribute('src'),
+				'wheel_img'       => $this->getAttribute($wheel),
+				'logo_img'        => $this->getAttribute($logo),
 				'cat_tabs_html'   => $cat_tabs->item(0)->ownerDocument->saveHTML($cat_tabs->item(0)),
 				'wheel_info_html' => $wheel_info->item(0)->ownerDocument->saveHTML($wheel_info->item(0)),				
-				'view_on_vehicle' => $view_on_vehicle->item(0)->getAttribute('href'),
+				'view_on_vehicle' => $this->getAttribute($view_on_vehicle, 'href'),
 				'text'			  => $text,
 				'description'     => array(
-					'href'      => $description->item(0)->getAttribute('href'),
+					'href'      => $this->getAttribute($description, 'href'),
 					'value'     => $description->item(0)->nodeValue));			
 		}
 
 		return $items;
 	}
 
+	/**
+	 * Build query for reset filter button
+	 * @param  array $get --- request
+	 * @return string     --- query
+	 */
+	public function getResetQuery($get)
+	{
+		foreach ($this->filter_fields as &$value) 
+		{
+			$get[$value] = 'All';
+		}
+		return http_build_query($get);
+	}
+
+	/**
+	 * Check now filtering?
+	 * @param  array  $get --- request
+	 * @return boolean     --- if filtering return TRUE | if not filtering FALSE
+	 */
+	public function isFiltering($get)
+	{		
+		foreach ($this->filter_fields as &$value) 
+		{
+			if(isset($get[$value]))
+			{
+				if($get[$value] != 'All') return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Transform array to input hide variables
+	 * Example:
+	 * array('key1' => 'value1', 'ke2' => 'value2');
+	 * TO
+	 * <input type="hidden" name="key1" value="value1">
+	 * <input type="hidden" name="key2" value="value12>	 * 
+	 * @param  array $arr --- fields and values
+	 * @return string     --- hidden inputs
+	 */
+	public function arrayToHideInputs($arr)
+	{
+		$out = '';
+		if($arr)
+		{
+			foreach ($arr as $key => $value) 
+			{
+				$out.= sprintf('<input type="hidden" name="%s" value="%s">', $key, $value);
+			}
+		}
+		return $out;
+	}
+
+	/**
+	 * Convert page parameter to _page.
+	 * Needed for normal work wordpress.
+	 * @param  string $str --- query
+	 * @return string      --- converted query
+	 */
+	private function pageTo_Page($str)
+	{
+		return str_replace('page&amp;page', 'page&amp;_page', $str);
+	}
+
+	/**
+	 * Convert _page parameter to page.
+	 * Needed for normal work wordpress.
+	 * @param  array $get --- request
+	 * @return array      --- converted query reques
+	 */
+	private function _pageToPage($get)
+	{
+		if(isset($get['_page']))
+		{
+			$get['page'] = $get['_page'];
+			unset($get['_page']);	
+		} 
+		return $get;
+	}
+
+	/**
+	 * Get attribute from DOMElement
+	 * @param  object $item --- item
+	 * @param  string $name --- attribute name
+	 * @return string       --- empty if is not DOMElement | return attribute if success
+	 */
+	private function getAttribute($item, $name = 'src')
+	{
+		if(get_class($item->item(0)) != 'DOMElement') return '';
+		return $item->item(0)->getAttribute($name);
+	}
+
+	/**
+	 * Get cookies for auth session
+	 * @return string --- Coolies. Example: param1=value1; param2=value2
+	 */
+	private function getCookieSession()
+	{
+		$cookie = $this->getCache('cookie');
+		if($cookie) return $cookie;
+		$url  = sprintf(self::SESSION_URL, http_build_query($_GET));
+		$html = $this->fileGetContentsCurl($url);
+		preg_match_all('/^Set-Cookie:\s*([^;]*)/mi', $html, $m);	
+		$cookie = $m[1][0].'; '.$m[1][1];
+		$this->setCache('cookie', $cookie);
+		return $cookie;
+	}
+
+	/**
+	 * Init response GET
+	 * @param  array $get --- $_GET
+	 * @return array      --- initialized get
+	 */
 	private function getInit($get)
 	{
 		if(!$get) return null;
@@ -102,6 +237,11 @@ class Shop{
 		return $get;
 	}
 
+	/**
+	 * Join array to string
+	 * @param  array $arr --- array to join
+	 * @return string     --- converted string
+	 */
 	public function joinArray($arr)
 	{
 		if(!$arr) return '';
@@ -153,8 +293,8 @@ class Shop{
 					<img src="<?php echo $item['wheel_img']; ?>" alt="">
 				</div>
 				<ul class="links">
-					<li><a href="#block-<?php echo $item['index']; ?>" class="bock-open">18" <br> 204</a></li>
-					<li><a href="#block-<?php echo $item['index']; ?>" class="bock-open">20" <br> 249</a></li>
+					<li><a href="#block-<?php echo $item['index']; ?>" class="block-open">18" <br> 204</a></li>
+					<li><a href="#block-<?php echo $item['index']; ?>" class="block-open">20" <br> 249</a></li>
 				</ul> 
 			</div>
 			<div class="right-side">
@@ -258,15 +398,20 @@ class Shop{
 	 * @param  string $url
 	 * @return string
 	 */
-	public function fileGetContentsCurl($url) 
+	public function fileGetContentsCurl($url, $cookie = '', $header = true) 
 	{
-
-	    $ch = curl_init();
-	    curl_setopt($ch, CURLOPT_COOKIE, 'WWW.TIRERACK.COM-172.16.1.16-443-COOKIE=R2653372670; JSESSIONID=06B54B36F9675C409F0A58DB54ED0E9B; Lock_Desktop=true');
-	    curl_setopt($ch, CURLOPT_HEADER, true);
+		
+	    $ch = curl_init();    
+	    
+	    curl_setopt($ch, CURLOPT_HEADER, $header);
 	    curl_setopt($ch, CURLOPT_COOKIESESSION, true);
+	   	if($cookie != '')
+	   	{
+	   		$head = array('Cookie: '.$cookie);
+	   		curl_setopt($ch, CURLOPT_HTTPHEADER, $head);
+	   	} 
 	    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
-	    // curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+	    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
 	    curl_setopt($ch, CURLOPT_URL, $url);
 
 	    $data = curl_exec($ch);	   
@@ -286,6 +431,34 @@ class Shop{
 			session_start();
 			return true;	
 		} 
+		return false;
+	}
+
+	/**
+	 * Set Cache
+	 * @param string  $key    
+	 * @param string  $val    
+	 * @param integer $time   
+	 * @param string  $prefix 
+	 */
+	public function setCache($key, $val, $time = 3600, $prefix = 'cheched-')
+	{		
+		set_transient($prefix.$key, $val, $time);
+	}
+
+	/**
+	 * Get Cache
+	 * @param  string $key    
+	 * @param  string $prefix 
+	 * @return mixed
+	 */
+	public function getCache($key, $prefix = 'cheched-')
+	{		
+		if(self::CACHE_ON)
+		{
+			$cached   = get_transient($prefix.$key);
+			if (false !== $cached) return $cached;	
+		}
 		return false;
 	}
 }

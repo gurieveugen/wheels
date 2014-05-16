@@ -5,9 +5,11 @@
 ?>
 
 <?php
-$top_scripts = nimbus_get_option('top_scripts_multi');
+$top_scripts    = nimbus_get_option('top_scripts_multi');
 $bottom_scripts = nimbus_get_option('bottom_scripts_multi');
+$items          = $GLOBALS['shop']->getResults();
 get_header();
+
 ?>
 
 <div id="content_wrap">   
@@ -193,63 +195,55 @@ get_header();
                     
                     <div class="filter-title">
                         <span>FILTER BY</span>
-                        <a href="#">(Reset Filters)</a>
+                        <a href="/shop?<?php echo $GLOBALS['shop']->getResetQuery($_GET); ?>">(Reset Filters)</a>
                     </div>
                     <!-- /.filter-title -->
 
                    <div class="accordion">
-                       <div class="accordion-group">
-                           <div class="accordion-heading">
-                               <a href="#collapseOne" class="accordion-toggle"><b class="down-caret"></b>Diameter</a>
-                           </div>
-                           <div class="accordion-body in collapse" id="collapseOne">
-                               <div class="accordion-inner">
-                                    <select name="additional" id="additional">
-                                        <option value="audi">Audi</option>
-                                        <option value="audi2">Audi2</option>
-                                    </select>    
-                               </div>
-                           </div>
-                       </div>
-                       <div class="accordion-group">
-                           <div class="accordion-heading">
-                               <a href="#collapseTwo" class="accordion-toggle"><b class="down-caret"></b>Finish</a>
-                           </div>
-                           <div class="accordion-body in collapse" id="collapseTwo">
-                               <div class="accordion-inner">
-                                    <select name="additional" id="additional">
-                                        <option value="audi">Audi</option>
-                                        <option value="audi2">Audi2</option>
-                                    </select>    
-                               </div>
-                           </div>
-                       </div>
-                       <div class="accordion-group">
-                           <div class="accordion-heading">
-                               <a href="#collapseThree" class="accordion-toggle"><b class="down-caret"></b>Brand</a>
-                           </div>
-                           <div class="accordion-body in collapse" id="collapseThree">
-                               <div class="accordion-inner">
-                                    <select name="additional" id="additional">
-                                        <option value="audi">Audi</option>
-                                        <option value="audi2">Audi2</option>
-                                    </select>    
-                               </div>
-                           </div>
-                       </div>
-                       <div class="accordion-group">
-                           <div class="accordion-heading">
-                               <a href="#collapseFour" class="accordion-toggle"><b class="down-caret"></b>Weight</a>
-                           </div>
-                           <div class="accordion-body in collapse" id="collapseFour">
-                               <div class="accordion-inner">
-                                    <select name="additional" id="additional">
-                                        <option value="audi">Audi</option>
-                                        <option value="audi2">Audi2</option>
-                                    </select>    
-                               </div>
-                           </div>
-                       </div>
+                        <form action="/shop">                            
+                            <?php echo $GLOBALS['shop']->arrayToHideInputs($_GET); ?>
+                            <div class="accordion-group">
+                                <div class="accordion-heading">
+                                    <a href="#collapseOne" class="accordion-toggle"><b class="down-caret"></b>Diameter</a>
+                                </div>
+                                <div class="accordion-body in collapse" id="collapseOne">
+                                    <div class="accordion-inner">
+                                         <?php echo $items['filter_size']; ?>                                         
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-group">
+                                <div class="accordion-heading">
+                                    <a href="#collapseTwo" class="accordion-toggle"><b class="down-caret"></b>Finish</a>
+                                </div>
+                                <div class="accordion-body in collapse" id="collapseTwo">
+                                    <div class="accordion-inner">
+                                         <?php echo $items['filter_finish']; ?>                                        
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-group">
+                                <div class="accordion-heading">
+                                    <a href="#collapseThree" class="accordion-toggle"><b class="down-caret"></b>Brand</a>
+                                </div>
+                                <div class="accordion-body in collapse" id="collapseThree">
+                                    <div class="accordion-inner">
+                                         <?php echo $items['filter_brand']; ?>                                         
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-group">
+                                <div class="accordion-heading">
+                                    <a href="#collapseFour" class="accordion-toggle"><b class="down-caret"></b>Weight</a>
+                                </div>
+                                <div class="accordion-body in collapse" id="collapseFour">
+                                    <div class="accordion-inner">
+                                         <?php echo $items['filter_weight']; ?>                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                       
                    </div>
                    <!-- /.accordion -->
 
@@ -259,8 +253,7 @@ get_header();
                 <div class="right-content">
                     <table class="main-table">
                         <tbody>
-                            <?php 
-                                $items = $GLOBALS['shop']->getResults();
+                            <?php                                 
                                 echo $GLOBALS['shop']->wrapItems($items);
                             ?>
                         </tbody>
@@ -404,7 +397,7 @@ get_header();
                         </tbody>
                     </table>   -->
                     <!-- /.main-table -->
-                    <div class="footer">
+                    <!-- <div class="footer">
                         <a href="#" class="link"><b>View all 266 wheels</b></a> | <label for="select-page">View per Page:</label>
                         <select name="page" id="select-page">
                             <option value="12">12</option>
@@ -425,7 +418,7 @@ get_header();
                             <li><a href="#">...</a></li>
                         </ul>
                         <a href="#" class="right-arrow"></a>
-                    </div>
+                    </div> -->
                 </div>       
                 <!-- /.right-content -->
                 
