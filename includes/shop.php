@@ -224,6 +224,7 @@ class Shop{
 	private function getInit($get)
 	{
 		if(!$get) return null;
+		$tmp 		     = null;
 		$compress_fields = array('autoMake', 'autoYear', 'autoModel', 'autoModClar');
 		foreach ($compress_fields as $field) 
 		{
