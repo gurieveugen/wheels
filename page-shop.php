@@ -191,64 +191,73 @@ get_header();
             <div class="clear"></div>       
 
             <div class="products">
-                <div class="left-content">
+                
+                    <?php
+                    if($items)
+                    {
+                        ?>
+                        <div class="left-content">
+                            <div class="filter-title">
+                                <span>FILTER BY</span>
+                                <a href="/shop?<?php echo $GLOBALS['shop']->getResetQuery($_GET); ?>">(Reset Filters)</a>
+                            </div>
+                            <!-- /.filter-title -->
+
+                           <div class="accordion">
+                                <form action="/shop">                            
+                                    <?php echo $GLOBALS['shop']->arrayToHideInputs($_GET); ?>
+                                    <div class="accordion-group">
+                                        <div class="accordion-heading">
+                                            <a href="#collapseOne" class="accordion-toggle"><b class="down-caret"></b>Diameter</a>
+                                        </div>
+                                        <div class="accordion-body in collapse" id="collapseOne">
+                                            <div class="accordion-inner">
+                                                 <?php echo $items['filter_size']; ?>                                         
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="accordion-group">
+                                        <div class="accordion-heading">
+                                            <a href="#collapseTwo" class="accordion-toggle"><b class="down-caret"></b>Finish</a>
+                                        </div>
+                                        <div class="accordion-body in collapse" id="collapseTwo">
+                                            <div class="accordion-inner">
+                                                 <?php echo $items['filter_finish']; ?>                                        
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="accordion-group">
+                                        <div class="accordion-heading">
+                                            <a href="#collapseThree" class="accordion-toggle"><b class="down-caret"></b>Brand</a>
+                                        </div>
+                                        <div class="accordion-body in collapse" id="collapseThree">
+                                            <div class="accordion-inner">
+                                                 <?php echo $items['filter_brand']; ?>                                         
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="accordion-group">
+                                        <div class="accordion-heading">
+                                            <a href="#collapseFour" class="accordion-toggle"><b class="down-caret"></b>Weight</a>
+                                        </div>
+                                        <div class="accordion-body in collapse" id="collapseFour">
+                                            <div class="accordion-inner">
+                                                 <?php echo $items['filter_weight']; ?>                                        
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                               
+                           </div>
+                           <!-- /.accordion -->
+
+                        </div>
+                        <!-- /.left-content -->
+                        <?php
+                    }
+                    ?>
                     
-                    <div class="filter-title">
-                        <span>FILTER BY</span>
-                        <a href="/shop?<?php echo $GLOBALS['shop']->getResetQuery($_GET); ?>">(Reset Filters)</a>
-                    </div>
-                    <!-- /.filter-title -->
-
-                   <div class="accordion">
-                        <form action="/shop">                            
-                            <?php echo $GLOBALS['shop']->arrayToHideInputs($_GET); ?>
-                            <div class="accordion-group">
-                                <div class="accordion-heading">
-                                    <a href="#collapseOne" class="accordion-toggle"><b class="down-caret"></b>Diameter</a>
-                                </div>
-                                <div class="accordion-body in collapse" id="collapseOne">
-                                    <div class="accordion-inner">
-                                         <?php echo $items['filter_size']; ?>                                         
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="accordion-group">
-                                <div class="accordion-heading">
-                                    <a href="#collapseTwo" class="accordion-toggle"><b class="down-caret"></b>Finish</a>
-                                </div>
-                                <div class="accordion-body in collapse" id="collapseTwo">
-                                    <div class="accordion-inner">
-                                         <?php echo $items['filter_finish']; ?>                                        
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="accordion-group">
-                                <div class="accordion-heading">
-                                    <a href="#collapseThree" class="accordion-toggle"><b class="down-caret"></b>Brand</a>
-                                </div>
-                                <div class="accordion-body in collapse" id="collapseThree">
-                                    <div class="accordion-inner">
-                                         <?php echo $items['filter_brand']; ?>                                         
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="accordion-group">
-                                <div class="accordion-heading">
-                                    <a href="#collapseFour" class="accordion-toggle"><b class="down-caret"></b>Weight</a>
-                                </div>
-                                <div class="accordion-body in collapse" id="collapseFour">
-                                    <div class="accordion-inner">
-                                         <?php echo $items['filter_weight']; ?>                                        
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                       
-                   </div>
-                   <!-- /.accordion -->
-
-                </div>
-                <!-- /.left-content -->
+                   
 
                 <div class="right-content">
                     <table class="main-table">
@@ -257,168 +266,7 @@ get_header();
                                 echo $GLOBALS['shop']->wrapItems($items);
                             ?>
                         </tbody>
-                    </table>
-                    <!-- <table class="main-table">
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <div class="left-side">
-                                        <div class="image">
-                                            <a href="#"><img src="<?php echo TDU; ?>/images/test1.jpg" alt=""></a>    
-                                        </div>   
-                                        <ul class="links">
-                                            <li><a href="#">18" <br> 204</a></li>
-                                            <li><a href="#">20" <br> 249</a></li>
-                                        </ul> 
-                                    </div>
-                                    <div class="right-side">
-                                        <div class="image">
-                                            <a href="#"><img src="<?php echo TDU; ?>/images/test1.gif" alt=""></a>                                                
-                                        </div>
-                                        <a href="#" class="link">Advanti Racing 15 Anniversary</a><br><br>
-                                        <span class="description">
-                                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Temporibus, autem.
-                                        </span><br>
-                                        <a href="#" class="link"><b>View on Vehicle</b></a>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="left-side">
-                                        <div class="image">
-                                            <a href="#"><img src="<?php echo TDU; ?>/images/test2.jpg" alt=""></a>    
-                                        </div>                                        
-                                        <ul class="links">
-                                            <li><a href="#">18" <br> 204</a></li>
-                                            <li><a href="#">20" <br> 249</a></li>
-                                        </ul> 
-                                    </div>
-                                    <div class="right-side">
-                                        <div class="image">
-                                            <a href="#"><img src="<?php echo TDU; ?>/images/test1.gif" alt=""></a>                                                
-                                        </div>
-                                        <a href="#" class="link">Advanti Racing 15 Anniversary</a><br><br>
-                                        <span class="description">
-                                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Temporibus, autem.
-                                        </span><br>
-                                        <a href="#" class="link"><b>View on Vehicle</b></a>
-                                    </div>
-                                </td>
-                            </tr>
-
-                             <tr>
-                                <td>
-                                    <div class="left-side">
-                                        <div class="image">
-                                            <a href="#"><img src="<?php echo TDU; ?>/images/test1.jpg" alt=""></a>    
-                                        </div>   
-                                        <ul class="links">
-                                            <li><a href="#">18" <br> 204</a></li>
-                                            <li><a href="#">20" <br> 249</a></li>
-                                        </ul> 
-                                    </div>
-                                    <div class="right-side">
-                                        <div class="image">
-                                            <a href="#"><img src="<?php echo TDU; ?>/images/test1.gif" alt=""></a>                                                
-                                        </div>
-                                        <a href="#" class="link">Advanti Racing 15 Anniversary</a><br><br>
-                                        <span class="description">
-                                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Temporibus, autem.
-                                        </span><br>
-                                        <a href="#" class="link"><b>View on Vehicle</b></a>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="left-side">
-                                        <div class="image">
-                                            <a href="#"><img src="<?php echo TDU; ?>/images/test2.jpg" alt=""></a>    
-                                        </div>                                        
-                                        <ul class="links">
-                                            <li><a href="#">18" <br> 204</a></li>
-                                            <li><a href="#">20" <br> 249</a></li>
-                                        </ul> 
-                                    </div>
-                                    <div class="right-side">
-                                        <div class="image">
-                                            <a href="#"><img src="<?php echo TDU; ?>/images/test1.gif" alt=""></a>                                                
-                                        </div>
-                                        <a href="#" class="link">Advanti Racing 15 Anniversary</a><br><br>
-                                        <span class="description">
-                                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Temporibus, autem.
-                                        </span><br>
-                                        <a href="#" class="link"><b>View on Vehicle</b></a>
-                                    </div>
-                                </td>
-                            </tr>
-
-                             <tr>
-                                <td>
-                                    <div class="left-side">
-                                        <div class="image">
-                                            <a href="#"><img src="<?php echo TDU; ?>/images/test1.jpg" alt=""></a>    
-                                        </div>   
-                                        <ul class="links">
-                                            <li><a href="#">18" <br> 204</a></li>
-                                            <li><a href="#">20" <br> 249</a></li>
-                                        </ul> 
-                                    </div>
-                                    <div class="right-side">
-                                        <div class="image">
-                                            <a href="#"><img src="<?php echo TDU; ?>/images/test1.gif" alt=""></a>                                                
-                                        </div>
-                                        <a href="#" class="link">Advanti Racing 15 Anniversary</a><br><br>
-                                        <span class="description">
-                                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Temporibus, autem.
-                                        </span><br>
-                                        <a href="#" class="link"><b>View on Vehicle</b></a>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="left-side">
-                                        <div class="image">
-                                            <a href="#"><img src="<?php echo TDU; ?>/images/test2.jpg" alt=""></a>    
-                                        </div>                                        
-                                        <ul class="links">
-                                            <li><a href="#">18" <br> 204</a></li>
-                                            <li><a href="#">20" <br> 249</a></li>
-                                        </ul> 
-                                    </div>
-                                    <div class="right-side">
-                                        <div class="image">
-                                            <a href="#"><img src="<?php echo TDU; ?>/images/test1.gif" alt=""></a>                                                
-                                        </div>
-                                        <a href="#" class="link">Advanti Racing 15 Anniversary</a><br><br>
-                                        <span class="description">
-                                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Temporibus, autem.
-                                        </span><br>
-                                        <a href="#" class="link"><b>View on Vehicle</b></a>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>   -->
-                    <!-- /.main-table -->
-                    <!-- <div class="footer">
-                        <a href="#" class="link"><b>View all 266 wheels</b></a> | <label for="select-page">View per Page:</label>
-                        <select name="page" id="select-page">
-                            <option value="12">12</option>
-                        </select>
-                        |
-                        <a href="#" class="left-arrow"></a>
-                        <ul class="pages">
-                            <li><b>1</b></li>
-                            <li><a href="#">2</a></li>
-                            <li><a href="#">3</a></li>
-                            <li><a href="#">4</a></li>
-                            <li><a href="#">5</a></li>
-                            <li><a href="#">6</a></li>
-                            <li><a href="#">7</a></li>
-                            <li><a href="#">8</a></li>
-                            <li><a href="#">9</a></li>
-                            <li><a href="#">10</a></li>
-                            <li><a href="#">...</a></li>
-                        </ul>
-                        <a href="#" class="right-arrow"></a>
-                    </div> -->
+                    </table>                    
                 </div>       
                 <!-- /.right-content -->
                 

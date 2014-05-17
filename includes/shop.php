@@ -48,8 +48,7 @@ class Shop{
 		$url       = $this->isFiltering($_GET) ? sprintf(self::SESSION_URL, http_build_query($_GET)) : sprintf(self::WHEELS_URL, http_build_query($_GET));
 		$dom       = new DOMDocument();
 		$block_dom = new DOMDocument();				
-		$html      = $this->fileGetContentsCurl($url, $cookie, false);
-
+		$html      = $this->fileGetContentsCurl($url, $cookie, false);		
 		$dom->loadHTML($html);
 		
 		$xpath         = new DOMXPath($dom);
