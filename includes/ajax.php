@@ -30,6 +30,18 @@ class AJAX{
 	}
 
 	/**
+	 * Get info block. AJAX.
+	 */
+	public function getInfo()
+	{
+		$url    = str_replace('/wheels/WheelGridControlServlet?', '', $_GET['url']);
+		$url    = sprintf($GLOBALS['shop']::WHEELS_URL, $url);
+		$cookie = $GLOBALS['shop']->getCookieSession();
+		$xml    = $GLOBALS['shop']->fileGetContentsCurl($url, $cookie, false);		
+		echo $xml;
+	}
+
+	/**
 	 * GET years XML
 	 * @return string --- XML CODE
 	 */

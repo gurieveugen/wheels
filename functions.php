@@ -512,6 +512,8 @@ function initShop()
     wp_enqueue_script('shop', TDU.'/js/shop.js', array('jquery'));    
     wp_enqueue_script('modal', TDU.'/js/jquery.modal.js', array('jquery'));
 
+
     wp_localize_script('shop', 'defaults', array(
+        'encodedVehicle' => isset($_GET['qs']) ? $_GET['qs'] : '',
         'ajax_url' => TDU.'/includes/ajax.php'));
 }

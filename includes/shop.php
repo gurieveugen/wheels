@@ -83,6 +83,7 @@ class Shop{
 			$description     = $block_x->query(".//*[@class='maincontainer']/div[1]/h4/a");
 			$cat_tabs        = $block_x->query(".//*[@class='maincontainer']/ul[@class='cat-tabs']");
 			$wheel_info      = $block_x->query(".//*[@class='maincontainer']/div[@class='wheelInfo']");
+			$wheel_info_btn  = $block_x->query(".//*[@class='maincontainer']/div[@class='wheelInfo']/div[@class='btmBTNContainer']");
 			$view_on_vehicle = $block_x->query(".//*[@class='maincontainer']/div[@class='wheelInfo']/div[@class='btmBTNContainer']/div[@class='vovDetailLinks']/div[1]/a");
 			$text            = $block_x->query(".//*[@class='maincontainer']/div[1]/h4");
 
@@ -90,12 +91,17 @@ class Shop{
 			$text = preg_replace('/<a.*?<\/a>/', '', $text);
 			$text = trim(str_replace(array('<br>', '<h4>', '</h4>'), '', $text));
 
+
+			$wheel_info_str     = $wheel_info->item(0)->ownerDocument->saveHTML($wheel_info->item(0));
+			$wheel_info_btn_str = $wheel_info_btn->item(0)->ownerDocument->saveHTML($wheel_info_btn->item(0));
+			$wheel_info_str     = str_replace($wheel_info_btn_str, '', $wheel_info_str);
+
 			$items[] = array(
 				'index'           => $index++,
 				'wheel_img'       => $this->getAttribute($wheel),
 				'logo_img'        => $this->getAttribute($logo),
 				'cat_tabs_html'   => $cat_tabs->item(0)->ownerDocument->saveHTML($cat_tabs->item(0)),
-				'wheel_info_html' => $wheel_info->item(0)->ownerDocument->saveHTML($wheel_info->item(0)),				
+				'wheel_info_html' => $wheel_info_str,				
 				'view_on_vehicle' => $this->getAttribute($view_on_vehicle, 'href'),
 				'text'			  => $text,
 				'description'     => array(
@@ -203,7 +209,7 @@ class Shop{
 	 * Get cookies for auth session
 	 * @return string --- Coolies. Example: param1=value1; param2=value2
 	 */
-	private function getCookieSession()
+	public function getCookieSession()
 	{
 		$cookie = $this->getCache('cookie');
 		if($cookie) return $cookie;
@@ -292,10 +298,7 @@ class Shop{
 				<div class="image">
 					<img src="<?php echo $item['wheel_img']; ?>" alt="">
 				</div>
-				<ul class="links">
-					<li><a href="#block-<?php echo $item['index']; ?>" class="block-open">18" <br> 204</a></li>
-					<li><a href="#block-<?php echo $item['index']; ?>" class="block-open">20" <br> 249</a></li>
-				</ul> 
+				<?php echo $item['cat_tabs_html']; ?>
 			</div>
 			<div class="right-side">
 				<div class="image">
@@ -325,11 +328,7 @@ class Shop{
 	{
 		ob_start();
 		?>
-		<div style="display: none" class="modal" id="block-<?php echo $id; ?>">
-		    <div class="header">
-		    	<h1 style="float: left">Description</h1>
-		        <a class="close" onclick="hideDialog(\'#block-<?php echo $id; ?>\')" data-dismiss="modal">×</a>
-		    </div>
+		<div style="display: none" class="modal" id="block-<?php echo $id; ?>">		    
 		    <div class="body text-center">			        
 		        <?php echo $text; ?>
 		   	</div>

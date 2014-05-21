@@ -274,4 +274,14 @@ get_header();
         </div>
     </div>
 </div>
+<div id="product-modal" class="modal" style="display: none;">
+    <div class="modal-header">
+        <button type="button" class="close" >&times;</button>
+        <h3>Description</h3>
+  </div>
+  <div class="modal-body">
+    
+  </div>
+</div>
+<!-- /#product-modal -->
 <?php get_footer(); ?>
