@@ -35,9 +35,9 @@ class AJAX{
 	public function getInfo()
 	{
 		$url    = str_replace('/wheels/WheelGridControlServlet?', '', $_GET['url']);
-		$url    = sprintf($GLOBALS['shop']::WHEELS_URL, $url);
-		$cookie = $GLOBALS['shop']->getCookieSession();
-		$xml    = $GLOBALS['shop']->fileGetContentsCurl($url, $cookie, false);		
+		$url    = sprintf($GLOBALS['shop_page']::WHEELS_URL, $url);
+		$cookie = $GLOBALS['shop_page']->getCookieSession();
+		$xml    = $GLOBALS['shop_page']->fileGetContentsCurl($url, $cookie, false);		
 		echo $xml;
 	}
 

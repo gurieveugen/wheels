@@ -7,9 +7,9 @@
 <?php
 $top_scripts    = nimbus_get_option('top_scripts_multi');
 $bottom_scripts = nimbus_get_option('bottom_scripts_multi');
-$items          = $GLOBALS['shop']->getResults();
-get_header();
+$items          = $GLOBALS['shop_page']->getResults();
 
+get_header();
 ?>
 
 <div id="content_wrap">   
@@ -136,7 +136,7 @@ get_header();
                                 <div class="span8">
                                     <?php 
                                         $years = array('Select make'); 
-                                        echo $GLOBALS['shop']->getSelectControl('autoYear', $years); 
+                                        echo $GLOBALS['shop_page']->getSelectControl('autoYear', $years); 
                                     ?>                                  
                                 </div>
                             </div>
@@ -151,7 +151,7 @@ get_header();
                                 <div class="span8">
                                     <?php 
                                         $years = array('Select year'); 
-                                        echo $GLOBALS['shop']->getSelectControl('autoModel', $years); 
+                                        echo $GLOBALS['shop_page']->getSelectControl('autoModel', $years); 
                                     ?>       
                                 </div>
                             </div>
@@ -165,7 +165,7 @@ get_header();
                                 <div class="span8">
                                     <?php 
                                         $years = array('Select model'); 
-                                        echo $GLOBALS['shop']->getSelectControl('autoModClar', $years); 
+                                        echo $GLOBALS['shop_page']->getSelectControl('autoModClar', $years); 
                                     ?> 
                                 </div>
                             </div>
@@ -190,81 +190,13 @@ get_header();
             <!-- /.cart-block -->
             <div class="clear"></div>       
 
-            <div class="products">
-                
-                    <?php
-                    if($items)
-                    {
-                        ?>
-                        <div class="left-content">
-                            <div class="filter-title">
-                                <span>FILTER BY</span>
-                                <a href="/shop?<?php echo $GLOBALS['shop']->getResetQuery($_GET); ?>">(Reset Filters)</a>
-                            </div>
-                            <!-- /.filter-title -->
-
-                           <div class="accordion">
-                                <form action="/shop">                            
-                                    <?php echo $GLOBALS['shop']->arrayToHideInputs($_GET); ?>
-                                    <div class="accordion-group">
-                                        <div class="accordion-heading">
-                                            <a href="#collapseOne" class="accordion-toggle"><b class="down-caret"></b>Diameter</a>
-                                        </div>
-                                        <div class="accordion-body in collapse" id="collapseOne">
-                                            <div class="accordion-inner">
-                                                 <?php echo $items['filter_size']; ?>                                         
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="accordion-group">
-                                        <div class="accordion-heading">
-                                            <a href="#collapseTwo" class="accordion-toggle"><b class="down-caret"></b>Finish</a>
-                                        </div>
-                                        <div class="accordion-body in collapse" id="collapseTwo">
-                                            <div class="accordion-inner">
-                                                 <?php echo $items['filter_finish']; ?>                                        
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="accordion-group">
-                                        <div class="accordion-heading">
-                                            <a href="#collapseThree" class="accordion-toggle"><b class="down-caret"></b>Brand</a>
-                                        </div>
-                                        <div class="accordion-body in collapse" id="collapseThree">
-                                            <div class="accordion-inner">
-                                                 <?php echo $items['filter_brand']; ?>                                         
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="accordion-group">
-                                        <div class="accordion-heading">
-                                            <a href="#collapseFour" class="accordion-toggle"><b class="down-caret"></b>Weight</a>
-                                        </div>
-                                        <div class="accordion-body in collapse" id="collapseFour">
-                                            <div class="accordion-inner">
-                                                 <?php echo $items['filter_weight']; ?>                                        
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
-                               
-                           </div>
-                           <!-- /.accordion -->
-
-                        </div>
-                        <!-- /.left-content -->
-                        <?php
-                    }
-                    ?>
-                    
-                   
-
+            <div class="products">                
+                <?php echo $GLOBALS['shop_page']->getSidebar($items); ?>
                 <div class="right-content">
                     <table class="main-table">
+                        <?php echo $GLOBALS['shop_page']->getTableHead(); ?>
                         <tbody>
-                            <?php                                 
-                                echo $GLOBALS['shop']->wrapItems($items);
-                            ?>
+                            <?php echo $GLOBALS['shop_page']->wrapItems($items); ?>
                         </tbody>
                     </table>                    
                 </div>       

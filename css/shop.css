@@ -549,3 +549,43 @@ form.controls-block section.selects button.btn-orange{
 .info-block{
 	width: 100%;
 }
+
+.tires .img-block{
+	width: 80px;
+	margin: 0 10px 10px 0;
+	float: left;
+}
+
+.tires .second-info-block,
+.tires .first-info-block{
+	display: block;
+	float: left;
+	width: 220px;
+}
+
+.tires .second-info-block .price-wrap{
+	display: block;
+	float: left;
+	width: 100%;
+}
+
+.tires .second-info-block .price-wrap .title,
+.tires .second-info-block .price-wrap .txt{
+	display: block;
+	float: left;
+}
+
+.tires .second-info-block .price-wrap .title{
+	margin: 0 5px 0 0;
+}
+
+.tires .title-block{
+	background: none repeat scroll 0 0 #C6E7F9;
+	font-weight: bold;
+	padding: 10px;
+	margin: 0 0 5px 0;
+}
+
+.red{
+	color: #CC0000;
+}

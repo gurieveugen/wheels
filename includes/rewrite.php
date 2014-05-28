@@ -29,7 +29,6 @@ class Rewrite{
 			unset($_GET['s']);
 			$url.= '?'.http_build_query($_GET);
 		}
-		//$this->mailDebug($url);
 		$img = $this->fileGetContentsCurl($url);
 		header('Content-type: '.$this->content_type);
 		echo $img;		
@@ -54,16 +53,6 @@ class Rewrite{
 	    curl_close($ch);
 
 	    return $data;
-	}
-
-	/**
-	* Send debug information to email
-	* @param  mixed $args --- debug info
-	* @return boolean     --- return mail function result
-	*/
-	public function mailDebug($args)
-	{
-		return mail('tatarinfamily@gmail.com', 'debug', print_r($args, true));
 	}
 }
 

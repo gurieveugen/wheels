@@ -148,9 +148,7 @@ function wrapInfoBlock(count, items)
 		{ column : 'price', title : 'Price' },
 		{ column : 'offset', title : 'Offset' },
 		{ column : 'backspacing', title : 'Backspacing' },
-		{ column : 'tirewidth', title : '' },
-		{ column : 'tireratio', title : '' },
-		{ column : 'tirediameter', title : '' },
+		{ column : 'width_ratio_diameter', title : 'Rec. Tire Size' },		
 		{ column : 'weight', title : 'Weight' },
 		{ column : 'material', title : 'Material' }];
 	var out = {};
@@ -158,7 +156,8 @@ function wrapInfoBlock(count, items)
 	var tr  = '';
 
 	for (var i = 0; i < count; i++) 
-	{		
+	{	
+		out['width_ratio_diameter'] = sprintf('<td>%s</td>', items[i]['tirewidth']	+ '/' + items[i]['tireratio']	+ '-' + items[i]['tirediameter']);
 		for (var x = 0; x < columns.length; x++) 
 		{
 			if(out[columns[x].column] === undefined) out[columns[x].column] = sprintf('<td>%s</td>', items[i][columns[x].column]);
@@ -171,7 +170,7 @@ function wrapInfoBlock(count, items)
 		tr += sprintf('<tr><td><b>%s:</b></td>%s</tr>', columns[i].title, out[columns[i].column]);
 	}
 	
-	return sprintf(str, tr);
+	return sprintf(str, tr.replace('//', '/').replace('undefined', ''));
 }
 
 /**
