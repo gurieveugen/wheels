@@ -203,7 +203,7 @@ class Base{
 	 * @param  array $arr --- fields and values
 	 * @return string     --- hidden inputs
 	 */
-	public function arrayToHideInputs($arr, $type)
+	public function arrayToHideInputs($arr, $type = '')
 	{
 		$out = '';
 		if($arr)
@@ -213,7 +213,7 @@ class Base{
 				$out.= sprintf('<input type="hidden" name="%s" value="%s">', $key, $value);
 			}
 
-			$out.= sprintf('<input type="hidden" name="r1" value="%s">', $type);
+			$out.= $type != '' ? sprintf('<input type="hidden" name="r1" value="%s">', $type) : '';
 		}
 		return $out;
 	}

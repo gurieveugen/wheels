@@ -509,6 +509,7 @@ function initShop()
 {
     wp_enqueue_style('shop', TDU.'/css/shop.css');
     wp_enqueue_style('modal', TDU.'/css/jquery.modal.css');
+    wp_enqueue_style('font-awesome', '//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css');
     wp_enqueue_script('shop', TDU.'/js/shop.js', array('jquery'));    
     wp_enqueue_script('modal', TDU.'/js/jquery.modal.js', array('jquery'));
 
@@ -516,4 +517,23 @@ function initShop()
     wp_localize_script('shop', 'defaults', array(
         'encodedVehicle' => isset($_GET['qs']) ? $_GET['qs'] : '',
         'ajax_url' => TDU.'/includes/ajax.php'));
+}
+
+
+function getStars($i)
+{
+    $i = floatval($i) * 2;
+    $stars = array(
+        0  => '<i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i>',
+        1  => '<i class="fa fa-star-half-empty"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i>',
+        2  => '<i class="fa fa-star"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i>',
+        3  => '<i class="fa fa-star"></i><i class="fa fa-star-half-empty"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i>',
+        4  => '<i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i>',
+        5  => '<i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-half-empty"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i>',
+        6  => '<i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i>',
+        7  => '<i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-half-empty"></i><i class="fa fa-star-o"></i>',
+        8  => '<i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-o"></i>',
+        9  => '<i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-half-empty"></i>',
+        10 => '<i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i>');
+    return $stars[$i];
 }

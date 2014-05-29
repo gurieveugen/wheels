@@ -550,10 +550,22 @@ form.controls-block section.selects button.btn-orange{
 	width: 100%;
 }
 
+.tires .new-img{
+	background: url(/images/css_elements/searchResults/icon_New.jpg);
+	width: 75px;
+	height: 15px;
+}
+
 .tires .img-block{
-	width: 80px;
+	width: 85px;
 	margin: 0 10px 10px 0;
 	float: left;
+}
+
+.tires .compare-block{
+	display: block;
+	float: left;
+	width: 20px;
 }
 
 .tires .second-info-block,
@@ -561,6 +573,20 @@ form.controls-block section.selects button.btn-orange{
 	display: block;
 	float: left;
 	width: 220px;
+}
+
+.tires .third-info-block{
+	float: left;
+	display: block;
+	width: 50px;
+}
+
+.tires .third-info-block select{
+	height: 20px;
+	margin: 0;
+	padding: 1px;
+	border-radius: 0;
+	width: 100%;
 }
 
 .tires .second-info-block .price-wrap{
@@ -584,6 +610,82 @@ form.controls-block section.selects button.btn-orange{
 	font-weight: bold;
 	padding: 10px;
 	margin: 0 0 5px 0;
+}
+
+.tires .description-block{
+	float: left;
+	max-width: 500px;
+}
+
+.tires .description-block .promo-block{
+	width: 100%;
+	text-align: center;
+	border-bottom: 1px solid black;
+	margin: 0 0 10px 0;
+}
+
+.tires .description-block .rhp{
+	display: block;
+	width: 100%;
+	background: #EDEDED;
+	float: left;
+	margin-top: 10px;
+}
+
+.tires .description-block .footer{
+	width: 100%;
+	float: left;
+	background: #CCCCCC;
+	border-top: 1px solid black;
+	margin-top: 10px;
+	padding: 5px;
+}
+
+.tires .description-block .footer b a{
+	color: black;
+	font-weight: bold;
+}
+
+.tires .description-block .footer .menu{
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.tires .description-block .footer .menu li{
+	display: inline-block;
+	margin: 0;
+}
+
+.tires .buttons-block{	
+	overflow: hidden;
+	padding: 10px;
+	text-align: center;
+	font-weight: bold;
+}
+
+.tires .btn{
+	font-size: 14px;
+}
+
+.tires-filter input{
+	width: auto;
+	height: 20px;
+	border-radius: 0;
+}
+
+.tires-filter label.w100p{
+	width: 100%;
+}
+
+.tires-filter label{
+	float: left;
+	width: 49%;
+}
+
+.tires-filter label span{	
+	font-size: 11px;
+	margin: 0px 0 0 3px;
 }
 
 .red{

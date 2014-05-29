@@ -87,6 +87,20 @@ jQuery(document).ready(function(){
 		});
 		e.preventDefault();
 	});
+
+	// =========================================================
+	// CHANGE FACTOR
+	// =========================================================
+	jQuery('.factor').change(function(e){
+		var count = jQuery(this).val();
+		var price = jQuery(this).data('price');
+		var block = jQuery(this).parent().parent().parent();
+		
+		block.find('span.count').text(count);
+		block.find('span.sum').text('$' + (count*price));
+		
+		e.preventDefault();
+	});
 	
 	// =========================================================
 	// VIEW ON VEHICLE
@@ -101,6 +115,22 @@ jQuery(document).ready(function(){
 	// =========================================================
 	jQuery('.close').click(function(e){
 		jQuery(this).parent().parent().modal('hide');
+		e.preventDefault();
+	});
+
+	// =========================================================
+	// TIRES FILTER
+	// =========================================================
+	jQuery('#tires_filter input').change(function(e){		
+		jQuery.ajax({
+			type: "POST",
+			url: defaults.ajax_url + '?action=getTireLocations',
+			dataType: 'xml',
+			data: jQuery('#tires_filter').serialize(),						
+			success: function(xml){    	
+				console.log(xml);
+			}
+		});
 		e.preventDefault();
 	});
 	
