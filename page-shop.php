@@ -193,6 +193,7 @@ get_header();
             <div class="products">                
                 <?php echo $GLOBALS['shop_page']->getSidebar($items); ?>
                 <div class="right-content">
+                    <?php echo $GLOBALS['shop_page']->getPagination($items); ?>
                     <table class="main-table">
                         <?php echo $GLOBALS['shop_page']->getTableHead(); ?>
                         <tbody>

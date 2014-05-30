@@ -104,6 +104,11 @@ class Wheels extends Base{
 		return '';
 	}
 
+	public function getPaginaion()
+	{
+		return '';
+	}
+
 	/**
 	 * Get Filter sidebar
 	 * @return string

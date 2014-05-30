@@ -136,4 +136,9 @@ class Tires extends base{
 	{
 		return '';
 	}
+
+	public function getPagination()
+	{
+		return '';
+	}
 }

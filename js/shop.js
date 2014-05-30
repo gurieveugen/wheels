@@ -122,19 +122,123 @@ jQuery(document).ready(function(){
 	// TIRES FILTER
 	// =========================================================
 	jQuery('#tires_filter input').change(function(e){		
+		var sorry = jQuery('<tr><td><b>Sorry, no tires match your current "Filter By" settings.</b> <ul> <li>1)Try changing your "Filter By" settings on the left for better results.</li><small>- or -</small><li>2)Reset your "Filter By" settings to display all available tires.</li> <small>- or -</small> <li>3) Search for tires for a different vehicle.</li> </ul></td></tr>');
 		jQuery.ajax({
 			type: "POST",
 			url: defaults.ajax_url + '?action=getTireLocations',
 			dataType: 'xml',
 			data: jQuery('#tires_filter').serialize(),						
 			success: function(xml){    	
-				console.log(xml);
+				jQuery('table.main-table tbody td').each(function(){
+					jQuery(this).parent().addClass('hide');
+				});
+
+				if(jQuery(xml).find('response noResults').text() == 'true')
+				{
+					jQuery('table.main-table tbody').prepend(sorry);
+				}
+				else
+				{
+					jQuery(xml).find('tireLocation').each(function(){
+						jQuery('#td-' + jQuery(this).text()).parent().removeClass('hide');
+					});
+				}
 			}
 		});
 		e.preventDefault();
 	});
 	
+	// =========================================================
+	// VIEW ALL BUTTON
+	// =========================================================
+	jQuery('.view-all-btn').click(function(e){
+		jQuery('.select-view').val(jQuery(this).data('count'));
+		viewPerPage(jQuery(this).data('count'));
+		e.preventDefault();
+	});
+	// =========================================================
+	// VIEW PER PAGE SELECT
+	// =========================================================
+	jQuery('.select-view').change(function(){
+		viewPerPage(jQuery(this).val());
+		jQuery('ul.pagination-list').replaceWith(getPaginationHTML(1, jQuery(this).val(), jQuery(this).data('count')));
+	});
+	initPagination();
+	
 });
+
+function initPagination()
+{
+	// =========================================================
+	// CLICK TO PAGINATION
+	// =========================================================
+	jQuery('ul.pagination-list li a').click(function(){
+		var val   = jQuery(this).data('val');
+		var count = jQuery(this).data('count');
+		pagination(val, count);
+		jQuery('ul.pagination-list').replaceWith(getPaginationHTML(val, count, jQuery(this).data('countAll')));
+		initPagination();
+	});
+}
+
+/**
+ * Generate pagination HTML code
+ * @param  integer current --- current page
+ * @param  integer count   --- items per page
+ * @param  integer items   --- count all items
+ * @return string          --- HTML code
+ */
+function getPaginationHTML(current, count, items)
+{
+	var out   = '';
+	var pages = Math.ceil(items/count);
+
+	out = '<ul class="pagination-list">';
+	if(current > 1) out += '<a data-count="'+count+'" data-val="'+(current-1)+'" href="#" class="activeprevious button"><span>&lt;</span></a>';
+	else out += '<a data-count="'+count+'" data-val="0" href="#" class="previous button"><span>&lt;</span></a>';
+	for (var i = 1; i <= pages; i++) 
+	{
+		if(i != current) out += '<li><a href="#" data-val="'+i+'" data-count="'+count+'">'+i+'</a></li>';
+		else out += '<li>'+i+'</li>';
+	}
+	if(current < pages) out += '<a data-count="'+count+'" data-val="'+(current+1)+'" class="activenext button" href="#"><span>&gt;</span></a>';
+	else out += '<a data-count="'+count+'" data-val="'+pages+'" class="next button" href="#"><span>&gt;</span></a>';
+	out += '</ul>';
+
+	return out;
+}
+
+/**
+ * Pagination items
+ * @param  integer val   --- current
+ * @param  integer count --- items per page
+ */
+function pagination(val, count)
+{
+	var offset = 0;
+	if(val > 1) offset = (count*(val-1));	
+	jQuery('table.main-table tbody td').each(function(index){
+		if(index < offset) jQuery(this).parent().addClass('hide');
+		else
+		{
+			if((offset + count) > index)
+			{
+				if(jQuery(this).parent().hasClass('hide')) jQuery(this).parent().removeClass('hide');
+			}
+		}
+	});
+}
+
+/**
+ * Show page count
+ * @param  integer val --- items counter
+ */
+function viewPerPage(val)
+{
+	jQuery('table.main-table tbody tr').each(function(index){
+		if(index < val) jQuery(this).removeClass('hide');
+	});
+}
 
 /**
  * Function from www.tirerack.com

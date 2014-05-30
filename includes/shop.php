@@ -55,6 +55,12 @@ class Shop extends Base{
 		return $this->parsers[$this->type]->getFilterSidebar($items);		
 	}
 
+	public function getPagination($items)
+	{
+		if(!$items) return '';
+		return $this->parsers[$this->type]->getPagination($items);
+	}
+
 	public function wrapItems($items)
 	{	
 		if(!$items) return $this->loadTemplatePart('notfound');

@@ -89,8 +89,7 @@ class AJAX{
 			'priceFilter'  => $_POST['priceFilter']
 			);
 		$url = self::TIRES_FILTER.'?'.$this->joinArray($query);
-		$cookie = $GLOBALS['shop_page']->getCookieSession();
-		echo $url;
+		$cookie = $GLOBALS['shop_page']->getCookieSession();		
 		echo $GLOBALS['shop_page']->fileGetContentsCurl($url, $cookie, false);			
 	}
 	

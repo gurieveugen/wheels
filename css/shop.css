@@ -550,10 +550,23 @@ form.controls-block section.selects button.btn-orange{
 	width: 100%;
 }
 
-.tires .new-img{
-	background: url(/images/css_elements/searchResults/icon_New.jpg);
+.tires .oe-img,
+.tires .best-seller-img,
+.tires .new-img{	
 	width: 75px;
 	height: 15px;
+}
+
+.tires .new-img{
+	background: url(/images/css_elements/searchResults/icon_New.jpg);
+}
+
+.tires .best-seller-img{
+	background: url(/images/css_elements/searchResults/icon_BestSeller.jpg);
+}
+
+.tires .oe-img{
+	background: url(/images/css_elements/searchResults/icon_OE.jpg);
 }
 
 .tires .img-block{
@@ -686,6 +699,54 @@ form.controls-block section.selects button.btn-orange{
 .tires-filter label span{	
 	font-size: 11px;
 	margin: 0px 0 0 3px;
+}
+
+/*PAGINATION BLOCK*/
+
+.pagination-block{
+	float: right;
+}
+
+.pagination-block .view-all a{
+	font-weight: bold;
+	text-decoration: underline;
+}
+
+
+.right-content .pagination-block select{
+	height: 20px;
+	margin: 0;
+	padding: 1px;
+	border-radius: 0;
+	width: 70px;
+}
+
+.pagination-block ul.pagination-list{
+	margin: 0;
+	padding: 0;
+	display: inline;
+}
+
+.pagination-block ul.pagination-list li{
+	display: inline-block;
+	margin: 0 3px;
+}
+
+.pagination-block ul.pagination-list li a:hover{
+	color: black;
+	text-decoration: underline;
+}
+
+.pagination-block ul.pagination-list li .previous span, .activeprevious span {
+	display: block;
+	margin: 2px 0 0 7px;
+	position: absolute;
+}
+
+.pagination-block ul.pagination-list li .next span, .activenext span {
+	display: block;
+	margin: 2px 0 0 7px;
+	position: absolute;
 }
 
 .red{

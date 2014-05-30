@@ -96,7 +96,7 @@ class TiresInDetail extends base{
 		                </div>
 		                <div class="accordion-body in collapse" id="collapseNull">
 		                    <div class="accordion-inner">
-	                        	<input type="text" name="priceFilter" value="60">                                         
+	                        	<input type="text" name="priceFilter" value="400">                                         
 		                    </div>
 		                </div>
 		            </div>
@@ -230,10 +230,13 @@ class TiresInDetail extends base{
 	{		
 		if(!$items) return $this->loadTemplatePart('notfound');
 		$out = '';
-		foreach ($items as &$item) 
+		$index = 10;
+		foreach ($items as $id => &$item) 
 		{
-			$str = $this->wrapItem($item);
-			$out.= $str != '' ? sprintf('<tr>%s</tr>', $str) : '';	
+			$index--;
+			$hide = $index < 0 ? 'hide' : '';
+			$str  = $this->wrapItem($item, $id);
+			$out .= $str != '' ? sprintf('<tr class="%s">%s</tr>', $hide, $str) : '';	
 		}
 		
 		return $out;
@@ -242,20 +245,25 @@ class TiresInDetail extends base{
 	/**
 	 * Wrap one result item
 	 * @param  array $item --- one item
+	 * @param  integer $id --- $item array key
 	 * @return string      --- HTML code
 	 */
-	public function wrapItem($item)
+	public function wrapItem($item, $id = 0)
 	{		
 		if(!$item) return '';
+
 		ob_start();
-		$price_txt = $item->isOnSpecial ? '<span class="red">Special</span>' : '';
-		$price_txt = $item->isOnClearance ? '<span class="red">Closeout</span>' : $price_txt;
-		$mark_down = $item->markdownPrice != '0' ? sprintf('<b>%s</b><br>', $item->markdownPriceFormatted) : '';
-		$promo     = $item->promoLongText != '' ? sprintf('<div class="promo-block"><span class="red">Special Offer: </span>%s</div>', $item->promoLongText) : '';
-		$new       = $item->isNew ? '<div class="new-img"></div>' : '';
-		$rhp_price = $item->rhpPrice > 0 ? sprintf('<div class="rhp"><img src="/images/css_elements/searchResults/rhpIcon.gif" alt="">Optional <u>Road Hazard Program:</u> %s</div>', $item->rhpPriceFormatted) : '<div class="rhp"><u>Includes Manufacturer\'s Road Hazard Warranty</u></div>';
+		$price_txt   = $item->isOnSpecial ? '<span class="red">Special</span>' : '';
+		$price_txt   = $item->isOnClearance ? '<span class="red">Closeout</span>' : $price_txt;
+		$mark_down   = $item->markdownPrice != '0' ? sprintf('<b>%s</b><br>', $item->markdownPriceFormatted) : '';
+		$promo       = $item->promoLongText != '' ? sprintf('<div class="promo-block"><span class="red">Special Offer: </span>%s</div>', $item->promoLongText) : '';
+		$new         = $item->isNew ? '<div class="new-img"></div>' : '';
+		$OE          = $item->isOE ? '<div class="oe-img"></div>' : '';
+		$best_seller = $item->isBestSeller ? '<div class="best-seller-img"></div>' : '';
+		$rhp_price   = $item->rhpPrice > 0 ? sprintf('<div class="rhp"><img src="/images/css_elements/searchResults/rhpIcon.gif" alt="">Optional <u>Road Hazard Program:</u> %s</div>', $item->rhpPriceFormatted) : '<div class="rhp"><u>Includes Manufacturer\'s Road Hazard Warranty</u></div>';
 		?>
-		<td>
+		<td id="td-<?php echo $id; ?>">
+			<?php // var_dump($item); ?>
 			<div class="tires">				
 				<div class="title-block">
 					<?php echo $item->tireMake.' '.$item->tireModel; ?>
@@ -266,6 +274,8 @@ class TiresInDetail extends base{
 				</div>			
 				<div class="img-block">
 					<?php echo $new; ?>
+					<?php echo $OE; ?>
+					<?php echo $best_seller; ?>
 					<img src="<?php echo $item->image; ?>" alt="<?php echo $item->tireModel; ?>">
 					<br><br>
 					<small>Consumer rating:</small><br>
@@ -334,5 +344,47 @@ class TiresInDetail extends base{
 		ob_end_clean();
 		return $var;
 	}
+
+	public function getPagination($items)
+	{		
+		$count = count($items);
+		$pages = ceil($count / 10);
+		ob_start();
+		?>
+		<div class="pagination-block">
+			<span class="view-all"><a href="#" class="view-all-btn" data-count="<?php echo $count; ?>">View all <?php echo $count; ?> results</a></span>
+			<span> |   View Per Page:</span>
+			<select name="select-view" class="select-view" data-count="<?php echo $count; ?>">
+				<option value="10">10</option>
+				<option value="25">25</option>
+				<option value="50">50</option>
+				<option value="<?php echo $count; ?>">All</option>
+			</select>
+			|
+			<ul class="pagination-list">
+				<li><a class="previous button" href="#" data-val="0" data-count="10"><span>&lt;</span></a></li>
+				<?php
+				for ($i=1; $i <=  $pages; $i++) 
+				{ 
+					if($i == 1)
+					{
+						printf('<li>%s</li>', $i);
+					}
+					else
+					{
+						printf('<li><a href="#" data-val="%1$s" data-count="10" data-count-all="%2$s">%1$s</a></li>', $i, $count);	
+					}					
+				}
+				?>
+				<li><a href="#" class="activenext button" data-val="2" data-count="10"><span>&gt;</span></a></li>
+			</ul>
+		</div>
+		<?php
+		$var = ob_get_contents();
+		ob_end_clean();
+		return $var;
+	}
+
+
 
 }
