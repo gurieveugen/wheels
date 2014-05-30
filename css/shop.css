@@ -749,6 +749,30 @@ form.controls-block section.selects button.btn-orange{
 	position: absolute;
 }
 
+.pagination-block ul.pagination-list li .next,
+.pagination-block ul.pagination-list li .activenext,
+.pagination-block ul.pagination-list li .previous,
+.pagination-block ul.pagination-list li .activeprevious{
+	display: block;
+	width: 15px;
+	height: 15px;
+	position: relative;
+	top: 3px;
+	background: url(../images/arrows.png);
+}
+
+.pagination-block ul.pagination-list li .activeprevious{
+	background-position: -17px -17px;
+}
+
+.pagination-block ul.pagination-list li .activenext{
+	background-position: -17px 0px;
+}
+
+.pagination-block ul.pagination-list li .next{
+	background-position: 0px -17px;
+}
+
 .red{
 	color: #CC0000;
 }

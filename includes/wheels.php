@@ -104,7 +104,7 @@ class Wheels extends Base{
 		return '';
 	}
 
-	public function getPaginaion()
+	public function getPagination()
 	{
 		return '';
 	}

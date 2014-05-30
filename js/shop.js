@@ -153,6 +153,7 @@ jQuery(document).ready(function(){
 	// =========================================================
 	jQuery('.view-all-btn').click(function(e){
 		jQuery('.select-view').val(jQuery(this).data('count'));
+		jQuery('.select-view').trigger('change');
 		viewPerPage(jQuery(this).data('count'));
 		e.preventDefault();
 	});
@@ -162,8 +163,25 @@ jQuery(document).ready(function(){
 	jQuery('.select-view').change(function(){
 		viewPerPage(jQuery(this).val());
 		jQuery('ul.pagination-list').replaceWith(getPaginationHTML(1, jQuery(this).val(), jQuery(this).data('count')));
+		initPagination();
 	});
 	initPagination();
+	// =========================================================
+	// PRICE RANGE
+	// =========================================================
+	jQuery( "#slider-range" ).slider({		
+		min: 20,
+		max: 400,
+		values: [ 400 ],
+		slide: function( event, ui ) {
+			jQuery("#amount").text("$" + ui.values[0]);
+			jQuery('#priceFilter').val(ui.values[0]);
+			clearTimeout(window.tOut);
+			window.tOut = setTimeout(function(){ jQuery('#priceFilter').trigger('change'); }, 600);
+			
+		}
+	});
+    jQuery("#amount").text( "$" + jQuery( "#slider-range" ).slider( "values", 0));
 	
 });
 
@@ -175,6 +193,7 @@ function initPagination()
 	jQuery('ul.pagination-list li a').click(function(){
 		var val   = jQuery(this).data('val');
 		var count = jQuery(this).data('count');
+
 		pagination(val, count);
 		jQuery('ul.pagination-list').replaceWith(getPaginationHTML(val, count, jQuery(this).data('countAll')));
 		initPagination();
@@ -189,20 +208,21 @@ function initPagination()
  * @return string          --- HTML code
  */
 function getPaginationHTML(current, count, items)
-{
+{	
 	var out   = '';
-	var pages = Math.ceil(items/count);
-
+	var pages = Math.ceil(items/count);	
+	if(pages <= 1) return '<ul class="pagination-list"></ul>';
+	
 	out = '<ul class="pagination-list">';
-	if(current > 1) out += '<a data-count="'+count+'" data-val="'+(current-1)+'" href="#" class="activeprevious button"><span>&lt;</span></a>';
-	else out += '<a data-count="'+count+'" data-val="0" href="#" class="previous button"><span>&lt;</span></a>';
+	if(current > 1) out += '<li><a data-count="'+count+'" data-val="'+(current-1)+'" data-count-all="'+items+'" href="#" class="activeprevious button"></a></li>';
+	else out += '<li><a data-count="'+count+'" data-val="0" data-count-all="'+items+'" href="#" class="previous button"></a></li>';
 	for (var i = 1; i <= pages; i++) 
 	{
-		if(i != current) out += '<li><a href="#" data-val="'+i+'" data-count="'+count+'">'+i+'</a></li>';
+		if(i != current) out += '<li><a href="#" data-val="'+i+'" data-count-all="'+items+'" data-count="'+count+'">'+i+'</a></li>';
 		else out += '<li>'+i+'</li>';
 	}
-	if(current < pages) out += '<a data-count="'+count+'" data-val="'+(current+1)+'" class="activenext button" href="#"><span>&gt;</span></a>';
-	else out += '<a data-count="'+count+'" data-val="'+pages+'" class="next button" href="#"><span>&gt;</span></a>';
+	if(current < pages) out += '<li><a data-count="'+count+'" data-val="'+(current+1)+'" data-count-all="'+items+'" class="activenext button" href="#"></a></li>';
+	else out += '<li><a data-count="'+count+'" data-val="'+pages+'" data-count-all="'+items+'" class="next button" href="#"></a></li>';
 	out += '</ul>';
 
 	return out;

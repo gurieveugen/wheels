@@ -28,7 +28,6 @@ class TiresInDetail extends base{
 		$block_dom = new DOMDocument();	
 		$cookie    = $this->getCookieSession();
 		$url       = sprintf(self::TIRES_IN_DETAIL_URL, $this->request_http);	
-		var_dump($url);	
 		$html      = $this->fileGetContentsCurl($url, $cookie, false);
 		preg_match_all('/(?s)tireList\[i\] = \{.*?\}/', $html, $out);
 
@@ -96,7 +95,9 @@ class TiresInDetail extends base{
 		                </div>
 		                <div class="accordion-body in collapse" id="collapseNull">
 		                    <div class="accordion-inner">
-	                        	<input type="text" name="priceFilter" value="400">                                         
+		                    	<div id="slider-range"></div>
+		                    	<div class="amount">Price Up To: <span id="amount">300</span></div>
+	                        	<input type="hidden" name="priceFilter" id="priceFilter" value="400">                                         
 		                    </div>
 		                </div>
 		            </div>
@@ -263,7 +264,7 @@ class TiresInDetail extends base{
 		$rhp_price   = $item->rhpPrice > 0 ? sprintf('<div class="rhp"><img src="/images/css_elements/searchResults/rhpIcon.gif" alt="">Optional <u>Road Hazard Program:</u> %s</div>', $item->rhpPriceFormatted) : '<div class="rhp"><u>Includes Manufacturer\'s Road Hazard Warranty</u></div>';
 		?>
 		<td id="td-<?php echo $id; ?>">
-			<?php // var_dump($item); ?>
+			
 			<div class="tires">				
 				<div class="title-block">
 					<?php echo $item->tireMake.' '.$item->tireModel; ?>
@@ -352,7 +353,7 @@ class TiresInDetail extends base{
 		ob_start();
 		?>
 		<div class="pagination-block">
-			<span class="view-all"><a href="#" class="view-all-btn" data-count="<?php echo $count; ?>">View all <?php echo $count; ?> results</a></span>
+			<span class="view-all"><a href="#" class="view-all-btn" data-count="<?php echo $count; ?>" >View all <?php echo $count; ?> results</a></span>
 			<span> |   View Per Page:</span>
 			<select name="select-view" class="select-view" data-count="<?php echo $count; ?>">
 				<option value="10">10</option>
@@ -362,7 +363,7 @@ class TiresInDetail extends base{
 			</select>
 			|
 			<ul class="pagination-list">
-				<li><a class="previous button" href="#" data-val="0" data-count="10"><span>&lt;</span></a></li>
+				<li><a class="previous button" href="#" data-val="0" data-count="10" data-count-all="<?php echo $count; ?>"></a></li>
 				<?php
 				for ($i=1; $i <=  $pages; $i++) 
 				{ 
@@ -376,7 +377,7 @@ class TiresInDetail extends base{
 					}					
 				}
 				?>
-				<li><a href="#" class="activenext button" data-val="2" data-count="10"><span>&gt;</span></a></li>
+				<li><a href="#" class="activenext button" data-val="2" data-count="10" data-count-all="<?php echo $count; ?>"></a></li>
 			</ul>
 		</div>
 		<?php

@@ -509,14 +509,16 @@ function initShop()
 {
     wp_enqueue_style('shop', TDU.'/css/shop.css');
     wp_enqueue_style('modal', TDU.'/css/jquery.modal.css');
+    wp_enqueue_style('jquery-ui', TDU.'/css/jquery-ui-1.10.4.custom.min.css');
     wp_enqueue_style('font-awesome', '//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css');
     wp_enqueue_script('shop', TDU.'/js/shop.js', array('jquery'));    
     wp_enqueue_script('modal', TDU.'/js/jquery.modal.js', array('jquery'));
+    wp_enqueue_script('jquery-ui', TDU.'/js/jquery-ui-1.10.4.custom.min.js', array('jquery'));
 
 
     wp_localize_script('shop', 'defaults', array(
         'encodedVehicle' => isset($_GET['qs']) ? $_GET['qs'] : '',
-        'ajax_url' => TDU.'/includes/ajax.php'));
+        'ajax_url'       => TDU.'/includes/ajax.php'));
 }
 
 
