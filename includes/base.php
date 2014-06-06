@@ -135,23 +135,33 @@ class Base{
 
 	/**
 	 * Get select control
-	 * @param  string $name   --- control name
-	 * @param  array  $values --- options array
-	 * @return string         --- html code select control
+	 * @param  string $name    --- control name
+	 * @param  array  $values  --- options array
+	 * @param  string $prepend --- prepend options
+	 * @return string          --- html code select control
 	 */
-	public function getSelectControl($name, $values)	
+	public function getSelectControl($name, $values, $current = '', $preped = '')	
 	{
-		$options = '';
+		$options = $preped;
 		if(is_array($values))
 		{
 			foreach ($values as &$val) 
 			{
-				if(strpos($val, 'Select')-1) $options.= sprintf('<option value="">%s</option>', $val);
-				else $options.= sprintf('<option value="%s">%s</option>', $val, $val);
+				$options.= sprintf('<option value="%1$s" %2$s>%1$s</option>', $val, $this->selected($val == $current));
 			}
 		}
-		return sprintf('<select name="%s" id="%s">%s</select>', $name, $name, $options);
+		return sprintf('<select name="%1$s" id="%1$s">%2$s</select>', $name, $options);
 	}		
+
+	/**
+	 * Helper class for select control
+	 * @param  boolean $yes --- return select or empty string
+	 * @return string 		--- select | empty string
+	 */
+	public function selected($yes)
+	{
+		return $yes ? 'selected' : '';
+	}
 
 	/**
 	 * Get attribute from DOMElement

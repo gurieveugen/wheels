@@ -34,7 +34,9 @@ jQuery(document).ready(function(){
 			success: function(xml){    	
 				jQuery('#autoYear').html('');							
 				jQuery(xml).find('years year').each(function(){
-					jQuery('#autoYear').append('<option value="' + jQuery(this).text() + '">' + jQuery(this).text() + '</option>');					
+					jQuery('#autoYear').append('<option value="' + jQuery(this).text() + '">' + jQuery(this).text() + '</option>');		
+					jQuery('#autoModel').html('<option value="">Select year</option>');		
+					jQuery('#autoModClar').html('<option value="">Select model</option>');	
 				});
 			}
 		});
@@ -56,7 +58,8 @@ jQuery(document).ready(function(){
 			success: function(xml){    	
 				jQuery('#autoModel').html('');							
 				jQuery(xml).find('models model').each(function(){
-					jQuery('#autoModel').append('<option value="' + jQuery(this).text() + '">' + jQuery(this).text() + '</option>');					
+					jQuery('#autoModel').append('<option value="' + jQuery(this).text() + '">' + jQuery(this).text() + '</option>');	
+					jQuery('#autoModClar').html('<option value="">Select model</option>');				
 				});
 			}
 		});
@@ -105,8 +108,26 @@ jQuery(document).ready(function(){
 	// =========================================================
 	// VIEW ON VEHICLE
 	// =========================================================
-	jQuery('.view-on-vehicle').click(function(e){
-		window.open(jQuery(this).attr('href'), 'popUp', 'width=700, height=495, scrollbars=1, resizable=1');
+	jQuery('.view-on-vehicle').click(function(e){				
+		jQuery.ajax({
+			type: "POST",
+			url: defaults.ajax_url + '?action=viewOnVehicle',
+			dataType: 'json',
+			data: { url : jQuery(this).attr('href') },						
+			success: function(request){ 				 	
+				if(request != undefined)
+				{
+					jQuery('#view-on-vehicle-modal .modal-header h3').text(request.title);
+					jQuery('#view-on-vehicle-modal .modal-header .paste-select').html(request.select);
+					jQuery('#view-on-vehicle-modal .modal-body .car .car-img').attr('src', request.car);
+					jQuery('#view-on-vehicle-modal .modal-body .car .wheels .left').attr('src', request.wheel);
+					jQuery('#view-on-vehicle-modal .modal-body .car .wheels .right').attr('src', request.wheel);
+					jQuery('#view-on-vehicle-modal .modal-body .paste-table').html(request.description);
+				}
+				jQuery('#view-on-vehicle-modal').modal();		
+				
+			}
+		});
 		e.preventDefault();
 	});
 
@@ -201,6 +222,26 @@ function initPagination()
 }
 
 /**
+ * Change vehicle color
+ */
+function changeVehicleColor() 
+{
+	if(document.getElementById("WSLchangeColor").selectedIndex > 1) 
+	{
+		var url = "/upgrade_garage/VehicleChangeServlet?action=changeColor&ajax=true&changeColor=" + document.getElementById("WSLchangeColor")[document.getElementById("WSLchangeColor").selectedIndex].value + '&' + defaults.encodedVehicle;
+		jQuery.ajax({
+			type: "POST",
+			url: defaults.ajax_url + '?action=changeVehicleColor',
+			dataType: 'xml',
+			data: { url : url },						
+			success: function(xml){  
+				jQuery('#view-on-vehicle-modal .modal-body .car .car-img').attr('src', '/images/wheelrack/car_images' + jQuery(xml).find('response carimage').text());				
+			}
+		});
+	}
+}
+
+/**
  * Generate pagination HTML code
  * @param  integer current --- current page
  * @param  integer count   --- items per page
@@ -269,11 +310,13 @@ function viewPerPage(val)
  * @param  object myEvent       
  */
 function toggleInfo(i, tabIndex, selectedFront, suffix, myEvent) 
-{
+{	
+	var img_lg  = jQuery(myEvent.originalTarget).parents('.left-side').find('.image').data('imgLg'); 
 	var items   = Array();
 	var url     = "/wheels/WheelGridControlServlet?action=openInfo&ajax=true&wheel=" + i + "&tab=" + tabIndex + "&initialPartNumber=" + selectedFront + '&' + defaults.encodedVehicle;
 	var columns = ['size', 'price', 'offset', 'backspacing', 'tirewidth', 'tireratio', 'tirediameter', 'weight', 'material'];
 	var item    = {};
+	var price   = 0;
 	jQuery.ajax({
 		type: "GET",
 		url: defaults.ajax_url + '?action=getInfo',
@@ -288,7 +331,21 @@ function toggleInfo(i, tabIndex, selectedFront, suffix, myEvent)
 				items.push(item);
 				item = {};			
 			});
-			console.log(items);
+			// =========================================================
+			// SUM TOTAL PRICE
+			// =========================================================
+			for (var i = 0; i < jQuery(xml).find('wheel').length; i++) 
+			{
+				price += parseFloat(items[i]['price']);
+				jQuery('#product-modal .modal-header .total .price').data('startPrice'+i, items[i]['price']);
+			}
+			// =========================================================
+			// INITIALIZE PARAMETERS
+			// =========================================================		
+			jQuery('#product-modal .modal-header .total .count').text(jQuery(xml).find('wheel').length);
+			jQuery('#product-modal .modal-header .total .price').text(currencyFormatted(price));
+			jQuery('#product-modal .modal-header .total .price').data('qtyPrice', price);
+			jQuery('#product-modal .img-lg img').attr('src', img_lg);
 			jQuery('#product-modal .modal-body').html(wrapInfoBlock(jQuery(xml).find('wheel').length, items));		
 			jQuery('#product-modal').modal();	
 		}
@@ -299,19 +356,20 @@ function wrapInfoBlock(count, items)
 {
 	var columns = [		
 		{ column : 'size', title : 'Size' },
-		{ column : 'price', title : 'Price' },
+		{ column : 'price', title : 'Price' },	
 		{ column : 'offset', title : 'Offset' },
 		{ column : 'backspacing', title : 'Backspacing' },
 		{ column : 'width_ratio_diameter', title : 'Rec. Tire Size' },		
 		{ column : 'weight', title : 'Weight' },
 		{ column : 'material', title : 'Material' }];
-	var out = {};
-	var str = '<table class="info-block"><tbody>%s</tbody></table>';
-	var tr  = '';
+	var out    = {};	
+	var prices = {};
+	var str    = '<table class="info-block"><tbody>%s</tbody></table>';
+	var tr     = '';
 
 	for (var i = 0; i < count; i++) 
 	{	
-		out['width_ratio_diameter'] = sprintf('<td>%s</td>', items[i]['tirewidth']	+ '/' + items[i]['tireratio']	+ '-' + items[i]['tirediameter']);
+		out['width_ratio_diameter'] = sprintf('<td>%s</td>', items[i]['tirewidth']	+ '/' + items[i]['tireratio']	+ '-' + items[i]['tirediameter']);		
 		for (var x = 0; x < columns.length; x++) 
 		{
 			if(out[columns[x].column] === undefined) out[columns[x].column] = sprintf('<td>%s</td>', items[i][columns[x].column]);
@@ -322,9 +380,56 @@ function wrapInfoBlock(count, items)
 	for (var i = 0; i < columns.length; i++) 
 	{		
 		tr += sprintf('<tr><td><b>%s:</b></td>%s</tr>', columns[i].title, out[columns[i].column]);
+	}	
+
+	if(count > 1)
+	{
+		tr += '<tr><td><b>Count:</b></td><td> <label for="">Front</label> <select name="front" id="front" onchange="changeFrontRear(this)"> <option value="0">0</option> <option value="1" selected>1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> <option value="6">6</option> <option value="7">7</option> <option value="8">8</option> </select> </td> <td> <label for="">Rear</label> <select name="rear" id="rear" onchange="changeFrontRear(this)"> <option value="0">0</option> <option value="1" selected>1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> <option value="6">6</option> <option value="7">7</option> <option value="8">8</option> </select> </td></tr>';	
+	}
+	else
+	{
+		tr += '<tr><td><b>Count:</b></td><td> <label for="">Qty</label> <select name="qtu" id="qtu" onchange="changeQty(this)"> <option value="1" selected>1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> <option value="6">6</option> <option value="7">7</option> <option value="8">8</option> </select> </td></tr>';
 	}
 	
+	
 	return sprintf(str, tr.replace('//', '/').replace('undefined', ''));
+}
+
+/**
+ * Change quantity
+ * @param  object obj --- html object
+ */
+function changeQty(obj)
+{
+	var select_ctrl = jQuery(obj);
+	var val         = select_ctrl.val();
+	var modal       = select_ctrl.parents('.modal');
+	var count       = modal.find('.modal-header .total .count');
+	var price       = modal.find('.modal-header .total .price');
+	var sum         = parseInt(val)*parseFloat(price.data('startPrice0'));
+
+	count.text(val);
+	price.text(currencyFormatted(sum));
+}
+
+/**
+ * Change front and rear
+ * @param  object obj --- html object
+ */
+function changeFrontRear(obj)
+{
+	var select_ctrl   = jQuery(obj);
+	var modal         = select_ctrl.parents('.modal');
+	var val           = modal.find('#front').val();	
+	var rear_val      = modal.find('#rear').val();
+	var count         = modal.find('.modal-header .total .count');
+	var price         = modal.find('.modal-header .total .price');
+	var start_price_0 = price.data('startPrice0');
+	var start_price_1 = price.data('startPrice1');
+	var sum           = (parseInt(val)*parseFloat(start_price_0)) + (parseInt(rear_val)*parseFloat(start_price_1));
+
+	count.text(parseInt(val) + parseInt(rear_val));
+	price.text(currencyFormatted(sum));
 }
 
 /**
@@ -463,4 +568,21 @@ function sprintf( ) {	// Return a formatted string
 	};
 
 	return format.replace(regex, doFormat);
+}
+
+/**
+ * Format currency 
+ * @param  string num --- price
+ * @return string     --- formated price
+ */
+function currencyFormatted(num) 
+{
+  num = num.toString().replace(/\$|\,/g,'');
+  if(isNaN(num)) num = "0";
+  num = Math.floor(num*100+0.50000000001);
+  cents = num%100;
+  num = Math.floor(num/100).toString();
+  if(cents<10) cents = "0" + cents;
+  for(var i = 0; i < Math.floor((num.length-(1+i))/3); i++) num = num.substring(0,num.length-(4*i+3))+','+ num.substring(num.length-(4*i+3));
+  return ('$' + num + '.' + cents);
 }

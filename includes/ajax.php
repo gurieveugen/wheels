@@ -4,6 +4,9 @@
 // =========================================================
 require($_SERVER["DOCUMENT_ROOT"].'/wp-blog-header.php');
 require_once 'shop.php';
+require_once 'view_on_vehicle.php';
+require_once 'change_vehicle_color.php';
+
 header("HTTP/1.1 200 OK");
 
 
@@ -32,12 +35,32 @@ class AJAX{
 	}
 
 	/**
+	 * Change Vehicle car color
+	 */
+	public function changeVehicleColor()
+	{
+		$change_vehicle_color = new ChangeVehicleColor($_POST);		
+		echo $change_vehicle_color->parse();
+	}
+
+	/**
+	 * Parser "view on vehicle" 
+	 */
+	public function viewOnVehicle()
+	{
+		$view_on_vehicle = new ViewOnVehicle($_POST);
+		$json = $view_on_vehicle->parse();
+		echo json_encode($json);
+	}
+
+	/**
 	 * Get info block. AJAX.
 	 */
 	public function getInfo()
 	{
 		$url    = str_replace('/wheels/WheelGridControlServlet?', '', $_GET['url']);
 		$url    = sprintf($GLOBALS['shop_page']::WHEELS_URL, $url);
+		
 		$cookie = $GLOBALS['shop_page']->getCookieSession();
 		$xml    = $GLOBALS['shop_page']->fileGetContentsCurl($url, $cookie, false);		
 		echo $xml;

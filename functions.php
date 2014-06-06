@@ -517,8 +517,8 @@ function initShop()
 
 
     wp_localize_script('shop', 'defaults', array(
-        'encodedVehicle' => isset($_GET['qs']) ? $_GET['qs'] : '',
-        'ajax_url'       => TDU.'/includes/ajax.php'));
+        'encodedVehicle' => isset($GLOBALS['shop_page']->parsers['wheels']->request['qs']) ? $GLOBALS['shop_page']->parsers['wheels']->request['qs'] : '',
+        'ajax_url'       => TDU.'/includes/ajax.php'));   
 }
 
 

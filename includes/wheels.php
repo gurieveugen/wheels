@@ -37,6 +37,7 @@ class Wheels extends Base{
 		$xpath         = new DOMXPath($dom);
 		$blocks        = $xpath->query(".//*[@id='alloy']/div/div[@class='maincontainer']");
 		$paging        = $xpath->query(".//*[@id='alloy']/table");
+		$page_title    = $xpath->query(".//*[@id='pagewrap']/table[1]/tr/td/h3");
 		$filter_size   = $xpath->query(".//*[@id='filterSize_id']");
 		$filter_finish = $xpath->query(".//*[@id='filterFinish_id']");
 		$filter_brand  = $xpath->query(".//*[@id='filterBrand_id']");
@@ -45,6 +46,17 @@ class Wheels extends Base{
 
 		if(!$blocks->length) return null;
 		$_SESSION['get'] = $this->request;
+
+		$page_title = $page_title->item(0)->ownerDocument->saveHTML($page_title->item(0));
+		if(preg_match('/<h3>.*?</', $page_title, $page_title_matches))
+		{
+			$page_title = str_replace(array('<h3>', '<'), '', $page_title_matches[0]);
+		}
+		else
+		{
+			$page_title = '';
+		}
+		$items['page_title'] = $page_title;
 
 		$items['paging'] = $paging->item(0)->ownerDocument->saveHTML($paging->item(0));		
 		$items['paging'] = str_replace('/wheels/WheelGridControlServlet', '/shop', $items['paging']);
@@ -62,6 +74,7 @@ class Wheels extends Base{
 			$block_dom->loadHTML($block->ownerDocument->saveHTML($block));			
 			$block_x         = new DOMXPath($block_dom);
 			$wheel           = $block_x->query(".//*[@class='maincontainer']/div[1]/div[@class='imagelinks']/a/img");			
+			$wheel_larger    = $block_x->query(".//*[@class='maincontainer']/div[1]/div[@class='imagelinks']/a/div[@class='viewLarger']");
 			$logo            = $block_x->query(".//*[@class='maincontainer']/div[1]/p/a/img");
 			$description     = $block_x->query(".//*[@class='maincontainer']/div[1]/h4/a");
 			$cat_tabs        = $block_x->query(".//*[@class='maincontainer']/ul[@class='cat-tabs']");
@@ -79,9 +92,20 @@ class Wheels extends Base{
 			$wheel_info_btn_str = $wheel_info_btn->item(0)->ownerDocument->saveHTML($wheel_info_btn->item(0));
 			$wheel_info_str     = str_replace($wheel_info_btn_str, '', $wheel_info_str);
 
+			$wheel_larger = $this->getAttribute($wheel_larger, 'onclick');
+			if(preg_match("/\'\/.*\'/", $wheel_larger, $wheel_larger_matches))
+			{
+				$wheel_larger = str_replace("'", '', $wheel_larger_matches[0]);
+			}
+			else
+			{
+				$wheel_larger = 'http://placehold.it/400x400';
+			}
+
 			$items[] = array(
 				'index'           => $index++,
 				'wheel_img'       => $this->getAttribute($wheel),
+				'wheel_img_lg'    => $wheel_larger,
 				'logo_img'        => $this->getAttribute($logo),
 				'cat_tabs_html'   => $cat_tabs->item(0)->ownerDocument->saveHTML($cat_tabs->item(0)),
 				'wheel_info_html' => $wheel_info_str,				
@@ -208,8 +232,8 @@ class Wheels extends Base{
 	public function wrapItems($items)
 	{
 		if(!$items) return $this->loadTemplatePart('notfound');
-
-		$out = '';
+		$title = $items['page_title'] != '' ? sprintf('<div class="items-title"><h3>%s</h3></div>', $items['page_title']) : '';
+		$out = $title;
 		for ($i=0; $i < count($items); $i+=2) 
 		{ 
 			$out.= '<tr>';
@@ -230,13 +254,14 @@ class Wheels extends Base{
 	 * @return string      --- HTML code
 	 */
 	public function wrapItem($item)
-	{
+	{		
 		ob_start();
 		?>
 		<td>
 			<div class="left-side">
-				<div class="image">
+				<div class="image" data-img-lg="<?php echo $item['wheel_img_lg']; ?>">
 					<img src="<?php echo $item['wheel_img']; ?>" alt="">
+					<img src="<?php echo $item['wheel_img_lg']; ?>" alt="hidden" class="hide">
 				</div>
 				<?php echo $item['cat_tabs_html']; ?>
 			</div>
@@ -248,7 +273,7 @@ class Wheels extends Base{
 				<span class="description">
 					<?php echo $item['text']; ?>
 				</span><br>
-				<a href="<?php echo $item['view_on_vehicle']; ?>" class="link view-on-vehicle" onclick="popUp(this); return false;" target="_blank"><b>View on Vehicle</b></a>
+				<a href="<?php echo $item['view_on_vehicle']; ?>" class="link view-on-vehicle" target="_blank"><b>View on Vehicle</b></a>
 			</div>
 			<?php echo $this->wrapItemInfo($item['index'], $item['wheel_info_html']); ?>
 		</td>

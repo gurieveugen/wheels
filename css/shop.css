@@ -401,6 +401,11 @@ form.controls-block section.selects button.btn-orange{
   display: block;
 }
 
+.modal .modal-header .total{
+	font: bold 18px/1.3em Arial,Helvetica,sans-serif;
+	text-transform: uppercase;	
+}
+
 .modal .footer{
   width: 100%;
 }
@@ -775,4 +780,76 @@ form.controls-block section.selects button.btn-orange{
 
 .red{
 	color: #CC0000;
+}
+
+.img-lg{
+	text-align: center;
+	margin: 10px 0 0 0;
+}
+
+.items-title{
+	margin: 20px 0 0 0;
+}
+
+#view-on-vehicle-modal{
+	width: 850px;
+}
+
+#view-on-vehicle-modal .modal-header h3{
+	float: left;
+}
+
+#view-on-vehicle-modal .modal-header select{
+	width: auto;
+	margin: 0 0 0 20px;
+}
+
+#view-on-vehicle-modal .modal-body{
+	max-height: 1000px;
+}
+
+#view-on-vehicle-modal .modal-body .car{
+	position: relative;	
+	margin: 0 auto;
+	width: 650px;
+}
+
+#view-on-vehicle-modal .modal-body .car ul.wheels{
+	position: absolute;
+	top: 116px;
+	left: 140px;
+	margin: 0;		
+}
+
+#view-on-vehicle-modal .modal-body .car ul.wheels li{
+	display: inline-block;
+}
+
+#view-on-vehicle-modal .modal-body .car ul.wheels li.right{
+	margin-left: 213px;
+}
+
+#WSLspecs img{
+	margin: 5px;
+}
+
+#WSLspecs td{
+	vertical-align: middle;
+}
+
+#WSLbullets td{
+	border-top: 1px solid #bbb;
+	border-bottom: 1px solid #bbb;
+
+}
+
+#WSLbullets div {
+  float: left !important;
+  font-size: 11px;  
+  padding: 5px;
+  max-width: 250px;
+}
+
+#WSLbullets div ul{
+	margin: 0;
 }
