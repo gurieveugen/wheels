@@ -9,8 +9,10 @@ class Base{
 	// / /__/ /_/ / / / (__  ) /_/ /_/ / / / / /_(__  ) 
 	// \___/\____/_/ /_/____/\__/\__,_/_/ /_/\__/____/  
 	const SESSION_URL         = 'http://www.tirerack.com/wheels/results.jsp?%s';
+	const SESSION_URL_TIRES   = 'http://www.tirerack.com/tires/TireSearchResults.jsp?%s';
 	const WHEELS_URL          = 'http://www.tirerack.com/wheels/WheelGridControlServlet?%s';
 	const TIRES_IN_DETAIL_URL = 'http://www.tirerack.com/tires/TireSearchResults.jsp?%s';
+	const SITE                = 'http://www.tirerack.com';
 	const CACHE_ON            = TRUE;
 	//                                       __  _          
 	//     ____  _________  ____  ___  _____/ /_(_)__  _____
@@ -39,19 +41,24 @@ class Base{
 	 */
 	public function fileGetContentsCurl($url, $cookie = '', $header = true) 
 	{
-		
 	    $ch = curl_init();    
 	    
 	    curl_setopt($ch, CURLOPT_HEADER, $header);
 	    curl_setopt($ch, CURLOPT_COOKIESESSION, true);
 	   	if($cookie != '')
 	   	{
-	   		$head = array('Cookie: '.$cookie);
-	   		curl_setopt($ch, CURLOPT_HTTPHEADER, $head);
+	   		curl_setopt ($ch, CURLOPT_COOKIE, $cookie);
 	   	} 
 	    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
 	    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
 	    curl_setopt($ch, CURLOPT_URL, $url);
+
+	    curl_setopt($ch, CURLOPT_VERBOSE, 2);
+	    curl_setopt($ch, CURLOPT_ENCODING, 0);
+	    curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0');
+	    curl_setopt($ch, CURLOPT_FAILONERROR, 1);
+	    curl_setopt($ch, CURLINFO_HEADER_OUT, 1);
+	    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
 
 	    $data = curl_exec($ch);	   
 	    curl_close($ch);
@@ -264,16 +271,23 @@ class Base{
 	 * Get cookies for auth session
 	 * @return string --- Coolies. Example: param1=value1; param2=value2
 	 */
-	public function getCookieSession()
+	public function getCookieSession($request = null)
 	{
 		$cookie = $this->getCache('cookie');
 		if($cookie) return $cookie;
-
-		$url  = sprintf(self::SESSION_URL, http_build_query($this->request));
+		if(!$this->request) $this->request = $_GET;
+		if($request != null) 
+		{
+			$this->request = $request;
+			$url  = sprintf(self::SESSION_URL_TIRES, http_build_query($this->request));
+		}
+		else
+		{
+			$url  = sprintf(self::SESSION_URL, http_build_query($this->request));	
+		}
 		$html = $this->fileGetContentsCurl($url);
 		preg_match_all('/^Set-Cookie:\s*([^;]*)/mi', $html, $m);	
 		$cookie = $m[1][0].'; '.$m[1][1];
-
 		$this->setCache('cookie', $cookie);
 		return $cookie;
 	} 

@@ -73,13 +73,35 @@ class ViewOnVehicle extends Base{
 		}
 		$description = str_replace('</a>', '', $description);
 
+		$vars = $this->getJavaVars($html, array('smallFrontY', 'smallFrontX', 'smallRearY', 'smallRearX'));		
+
 		$items = array(
 			'car'         => $car,
 			'title'       => $title,
 			'wheel'       => $wheel,
 			'select'      => $select,
 			'description' => $description);
+		$items = array_merge($vars, $items);
 		
 		return $items;
+	}
+
+	/**
+	 * Get JAVA vars from html
+	 * @param  string $html --- html code
+	 * @param  array $vars  --- needed vars to get
+	 * @return array        --- result array
+	 */
+	public function getJavaVars($html, $vars)
+	{
+		$res = array();
+		foreach ($vars as $var) 
+		{
+			if(preg_match('/var '.$var.' = "[0-9]*/', $html, $matches))
+			{
+				$res[$var] = str_replace('var '.$var.' = "', '', $matches[0]);				
+			}
+		}
+		return $res;
 	}
 }

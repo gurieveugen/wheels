@@ -10,7 +10,9 @@ form.controls-block,
 form.controls-block section.radio,
 form.controls-block section.selects,
 .products .right-content table.main-table,
-.products .right-content table.main-table tbody tr td .left-side ul.links li a{
+.products .right-content table.main-table tbody tr td .left-side ul.links li a,
+#tire-modal,
+#tire-modal .modal-body{
 	-moz-box-sizing:    border-box;
 	-webkit-box-sizing: border-box; 
 	box-sizing:        border-box; 
@@ -29,6 +31,7 @@ form.controls-block{
 	background: #c6e7f9;
 	overflow: hidden;
 	float: left;
+	border:1px solid #3ba9db;
 }
 
 form.controls-block section.radio{
@@ -42,13 +45,13 @@ form.controls-block section.radio{
 form.controls-block section.selects{
 	overflow: hidden;
 	height: 100%;
-	padding: 10px 0  0 20px;
+	padding: 8px 0  0 20px;
 	margin: 0;	
-	width: 740px;
+	width: 738px;
 }
 
 form.controls-block section.selects label{
-	font-size: 14px;
+	font-size: 13px;
 	font-weight: bold;
 }
 
@@ -88,7 +91,7 @@ form.controls-block section.selects button.btn-orange{
 	height: 67px;
 	float: right;
 	background: #82d2f2;
-	padding: 20px 18px;
+	padding: 20px 15px;
 }
 
 .cart-block img.cart-icon{
@@ -102,8 +105,9 @@ form.controls-block section.selects button.btn-orange{
 }
 
 .cart-block .titles{
-	width: 55px;
+	width: 68px;
 	position: relative;
+	margin-left:4px;
 	top: -3px;
 }
 
@@ -242,7 +246,7 @@ form.controls-block section.selects button.btn-orange{
 
 .products .right-content{
 	overflow: hidden;
-	margin: 5px 25px 0 0; 
+	margin: 16px 25px 0 0; 
 }
 
 
@@ -329,7 +333,7 @@ form.controls-block section.selects button.btn-orange{
 }
 
 .products .right-content table.main-table tbody tr td .right-side{
-	width: 230px;
+	width: 280px;
 	float: left;
 }
 
@@ -635,6 +639,19 @@ form.controls-block section.selects button.btn-orange{
 	max-width: 500px;
 }
 
+.tires .description-block .description-block-row{
+	display: block;
+	float: left;
+	width: 100%;
+	margin: 0 0 20px 0;	
+}
+
+.tires .description-block .borderred{
+	border-top: 1px solid black;
+	padding-top: 10px;
+}
+
+
 .tires .description-block .promo-block{
 	width: 100%;
 	text-align: center;
@@ -785,6 +802,7 @@ form.controls-block section.selects button.btn-orange{
 .img-lg{
 	text-align: center;
 	margin: 10px 0 0 0;
+	float:left;
 }
 
 .items-title{
@@ -816,17 +834,11 @@ form.controls-block section.selects button.btn-orange{
 
 #view-on-vehicle-modal .modal-body .car ul.wheels{
 	position: absolute;
-	top: 116px;
-	left: 140px;
-	margin: 0;		
+	margin: 0;	
 }
 
 #view-on-vehicle-modal .modal-body .car ul.wheels li{
 	display: inline-block;
-}
-
-#view-on-vehicle-modal .modal-body .car ul.wheels li.right{
-	margin-left: 213px;
 }
 
 #WSLspecs img{
@@ -852,4 +864,270 @@ form.controls-block section.selects button.btn-orange{
 
 #WSLbullets div ul{
 	margin: 0;
+}
+
+
+#tire-modal{
+	width: 1000px;
+}
+
+#tire-modal .modal-body .small-images{
+	margin: 0;
+}
+
+#tire-modal .modal-body .image-block{
+	width: 225px;
+	float: left;
+	display: block;
+}
+
+#tire-modal .modal-body .image-block .separator-text{
+	font-weight: bold;
+	text-align: center;
+	border: 1px solid black;
+	background: #EEEEEE;
+}
+
+#tire-modal .modal-body .image-block .separator-text-dark{
+	font-weight: bold;
+	text-align: center;
+	border-left: 1px solid black;
+	border-right: 1px solid black;
+	border-bottom: 1px solid black;
+	background: #CCCCCC;
+}
+
+#tire-modal .modal-body .image-block .separator-text-light{
+	font-weight: normal;
+	text-align: center;
+	border-left: 1px solid black;
+	border-right: 1px solid black;
+	background: white;
+}
+
+#tire-modal .modal-body .image-block .separator-text span{
+	font-weight: normal;
+}
+
+#tire-modal .modal-body .image-block img{
+	width: 100%;
+}
+
+#tire-modal .modal-body .small-images li{
+	display: block;
+	float: left;
+}
+
+#tire-modal .modal-body .tabs-wrap{
+	display: block;
+	float: right;
+	margin: 0 0 0 20px;
+	width: 700px;
+}
+
+#tire-modal .modal-body .tabs-wrap .tab-content .tab-pane{
+	display: none;
+}
+
+#tire-modal .modal-body .tabs-wrap .tab-content .active{
+	display: block !important;
+}
+
+table.surveyresults {
+    border-collapse: collapse;
+    margin-bottom: 1em;
+    width: 100%;
+}
+table.surveyresults thead td {
+    text-align: left;
+}
+table.surveyresults tbody td {
+    border: 1px solid #CCCCCC;
+    padding: 2px;
+}
+table.surveykey {
+    border: 1px solid #CCCCCC;
+}
+table.surveykey div {
+    float: left;
+    line-height: 10px;
+    margin-right: 3px;
+    width: 16px;
+}
+table.surveykey thead td {
+    background-color: #CCCCCC;
+    font-weight: 700;
+}
+table.summarytable {
+    width: 100%;
+}
+table.summarytable td {
+    border-color: #DDDDDD;
+    border-style: solid;
+    border-width: 0 0 1px;
+    padding: 4px;
+}
+table.summarytable td.key {
+    border-left-width: 2px;
+    font-weight: 700;
+    width: 122px;
+}
+table.summarytable td.score, table.summarytable tfoot td {
+    background-image: url("/images/tires/images/gradient_bg.jpg");
+    background-repeat: repeat-y;
+    border-width: 0 2px 1px;
+}
+table.summarytable td.legend {
+    background-color: #DDDDDD;
+    background-image: none;
+    text-align: center;
+    width: 150px;
+}
+table.summarytable td.score span {
+    display: block;
+    float: right;
+    text-align: center;
+    width: 4em;
+}
+table.summarytable tfoot td {
+    background-color: #F0F0F0;
+    background-position: right center;
+    border-width: 0 2px 2px;
+    text-align: left;
+}
+table.summarytable thead td {
+    padding: 0;
+}
+table.summarytable thead td span {
+    background-position: left center;
+    padding-left: 1em;
+    text-align: center;
+}
+
+.superior,
+.excellent,
+.good,
+.fair,
+.unacceptable,
+.notavail{
+	margin: 3px 0 0 0;
+}
+
+.superior {
+    background-color: #33CC00;
+}
+.excellent {
+    background-color: #99FF99;
+}
+.good {
+    background-color: #FFFF00;
+}
+.fair {
+    background-color: #FF9999;
+}
+.unacceptable {
+    background-color: #CC0000;
+}
+.notavail {
+    background-color: #FFFFFF;
+}
+
+p.csr{
+	margin: 0;
+}
+
+.add-button{
+	display: inline-block;
+}
+.search_title
+{
+background: none repeat scroll 0 0 #3BA9DB;
+    color: #FFFFFF;
+    font-size: 16px;
+    font-weight: 700;
+    height: 30px;
+    line-height: 28px;
+    margin-top: -30px;
+    position: absolute;
+    text-align: center;
+    width: 249px;
+}
+.btn_orange
+{
+ background: none repeat scroll 0 0 #EC7618;
+    border: medium none;
+    border-radius: 0;
+    color: #FFFFFF;
+    font-family: Arial;
+    font-size: 14px;
+    font-weight: bold;
+    margin: 9px 0 0;
+    padding: 9px;
+    text-align: center;
+
+}
+.btn_orange:hover
+{
+    border: medium none;
+    border-radius: 0;
+    color: #000;
+    font-family: Arial;
+    font-size: 14px;
+    font-weight: bold;
+    margin: 9px 0 0;
+    padding: 9px;
+
+}
+.select_arrow
+{
+bottom: 20px;
+    clear: both;
+    color: #7D7D7D;
+    left: 130px;
+    position: relative;
+}
+.select_arrow span
+{
+ border-bottom: 4px solid transparent;
+    border-top: 4px solid transparent;
+    border-right: 4px solid #7d7d7d;
+    display: inline-block;
+    height: 0;
+    vertical-align: top;
+    width: 0;
+    position: relative;
+    top: 3px;
+    left: 1px;
+}
+.wp_cart_checkout_button
+{
+	float:right;margin-top:20px;
+}
+
+
+
+@media(max-width:767px){
+    #content_full form.controls-block{
+        margin: 40px 0 0 0;
+        height: auto;
+        width: 100%;
+    }
+
+    #content_full form.controls-block section.radio{
+        width: 100%;
+        padding: 20px 0px 10px 30px;
+        border-right: none;
+        border-bottom: 1px solid #fff;
+        box-sizing: border-box;
+    }
+
+    #content_full form.controls-block section.selects{
+        width: 90%;
+        margin: 0 0 10px  0;
+    }
+
+    #content_full .cart-block{
+        width: 100%;
+        margin: 10px 0;
+    }
 }

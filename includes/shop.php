@@ -30,11 +30,15 @@ class Shop extends Base{
 	 * @return string --- XML CODE
 	 */
 	public function getResults()
-	{
-		if(!$_GET) return null;		
-		libxml_use_internal_errors(true);		
-		$this->type = isset($_GET['r1']) ? $_GET['r1'] : $_SESSION['type'];
+	{		
+		unset($_GET['q']);
+		$this->type       = isset($_SESSION['type']) ? $_SESSION['type'] : 'wheels';
+		$this->type       = isset($_GET['r1']) ? $_GET['r1'] : $this->type;	
+		$this->type       = $this->type == '' ? 'wheels' : $this->type;
 		$_SESSION['type'] = $this->type;
+
+		if(!$_GET) return null;	
+		libxml_use_internal_errors(true);	
 		unset($_GET['r1']);
 
 		$this->parsers['wheels']          = new Wheels($_GET);	

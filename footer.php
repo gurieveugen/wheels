@@ -1,7 +1,7 @@
 <div id="footer_wrap" class="row">
 
     <div id="footer" class="span12 center none">
-
+ 
         <div id="footer_widgets_wrap">
 
             <div class="row">

@@ -1,13 +1,6 @@
 <?php
 require_once 'base.php';
 class TiresInDetail extends base{
-	//                                       __  _          
-	//     ____  _________  ____  ___  _____/ /_(_)__  _____
-	//    / __ \/ ___/ __ \/ __ \/ _ \/ ___/ __/ / _ \/ ___/
-	//   / /_/ / /  / /_/ / /_/ /  __/ /  / /_/ /  __(__  ) 
-	//  / .___/_/   \____/ .___/\___/_/   \__/_/\___/____/  
-	// /_/              /_/                                 
-
 	//                    __  __              __    
 	//    ____ ___  ___  / /_/ /_  ____  ____/ /____
 	//   / __ `__ \/ _ \/ __/ __ \/ __ \/ __  / ___/
@@ -24,23 +17,28 @@ class TiresInDetail extends base{
 	 */
 	public function parse()
 	{
+		$items     = array();
 		$dom       = new DOMDocument();
 		$block_dom = new DOMDocument();	
 		$cookie    = $this->getCookieSession();
 		$url       = sprintf(self::TIRES_IN_DETAIL_URL, $this->request_http);	
 		$html      = $this->fileGetContentsCurl($url, $cookie, false);
 		preg_match_all('/(?s)tireList\[i\] = \{.*?\}/', $html, $out);
-
-		$str = str_replace('tireList[i] = ', '', $out[0][0]);
+		preg_match_all('/(?s)rearTires\[rearTireIndex\] = \{.*?\}/', $html, $out_rear);
+		
+		$debug_count = 10;
 		if(isset($out[0]) && is_array($out[0]))
 		{
 			foreach ($out[0] as $key => &$value) 
-			{
-				$items[$key] = $this->javaJSONDecode(str_replace('tireList[i] = ', '', $value));	
+			{			
+				
+				$items[$key] = $this->javaJSONDecode(str_replace('tireList[i] = ', '', $value));					
+				if(isset($out_rear[0][$key]))
+				{
+					$items[$key]->rear_item = $this->javaJSONDecode(str_replace('rearTires[rearTireIndex] = ', '', $out_rear[0][$key]));	
+				}
 			}	
 		}
-		
-
 		return $items;
 	}
 
@@ -57,7 +55,8 @@ class TiresInDetail extends base{
 		$s = str_replace(' "', ' \'', $s);
 		$s = str_replace( array('"',  "'"), array('\"', '"'), $s );
 		
-	    $s = preg_replace('/(\w+):\s/i', '"\1":', $s);	    
+	    $s = preg_replace('/(\w+):\s/i', '"\1":', $s);	
+	    $s = iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($s));  
 	    return json_decode($s);
 	}
 
@@ -232,11 +231,13 @@ class TiresInDetail extends base{
 		if(!$items) return $this->loadTemplatePart('notfound');
 		$out = '';
 		$index = 10;
+		
 		foreach ($items as $id => &$item) 
 		{
 			$index--;
 			$hide = $index < 0 ? 'hide' : '';
 			$str  = $this->wrapItem($item, $id);
+			
 			$out .= $str != '' ? sprintf('<tr class="%s">%s</tr>', $hide, $str) : '';	
 		}
 		
@@ -251,17 +252,15 @@ class TiresInDetail extends base{
 	 */
 	public function wrapItem($item, $id = 0)
 	{		
-		if(!$item) return '';
-
-		ob_start();
-		$price_txt   = $item->isOnSpecial ? '<span class="red">Special</span>' : '';
-		$price_txt   = $item->isOnClearance ? '<span class="red">Closeout</span>' : $price_txt;
-		$mark_down   = $item->markdownPrice != '0' ? sprintf('<b>%s</b><br>', $item->markdownPriceFormatted) : '';
-		$promo       = $item->promoLongText != '' ? sprintf('<div class="promo-block"><span class="red">Special Offer: </span>%s</div>', $item->promoLongText) : '';
+	
+		if(!$item) return '';		
+		ob_start();		
 		$new         = $item->isNew ? '<div class="new-img"></div>' : '';
 		$OE          = $item->isOE ? '<div class="oe-img"></div>' : '';
-		$best_seller = $item->isBestSeller ? '<div class="best-seller-img"></div>' : '';
-		$rhp_price   = $item->rhpPrice > 0 ? sprintf('<div class="rhp"><img src="/images/css_elements/searchResults/rhpIcon.gif" alt="">Optional <u>Road Hazard Program:</u> %s</div>', $item->rhpPriceFormatted) : '<div class="rhp"><u>Includes Manufacturer\'s Road Hazard Warranty</u></div>';
+		$best_seller = $item->isBestSeller ? '<div class="best-seller-img"></div>' : '';	
+		$promo       = $item->promoLongText != '' ? sprintf('<div class="promo-block"><span class="red">Special Offer: </span>%s</div>', $item->promoLongText) : '';	
+		
+		
 		?>
 		<td id="td-<?php echo $id; ?>">
 			
@@ -269,73 +268,67 @@ class TiresInDetail extends base{
 				<div class="title-block">
 					<?php echo $item->tireMake.' '.$item->tireModel; ?>
 				</div>	
-				<div class="compare-block">
-					<input type="checkbox"><br>
-					<img src="/images/search_buttons/compare.gif" alt="">
-				</div>			
+						
 				<div class="img-block">
 					<?php echo $new; ?>
 					<?php echo $OE; ?>
 					<?php echo $best_seller; ?>
-					<img src="<?php echo $item->image; ?>" alt="<?php echo $item->tireModel; ?>">
+					<a href="#" class="load-tire-modal" data-has-surveys="<?php echo $item->hasSurveys; ?>" data-url="<?php echo $item->url; ?>">
+						<img src="<?php echo $item->image; ?>" alt="<?php echo $item->tireModel; ?>">
+					</a>
 					<br><br>
-					<small>Consumer rating:</small><br>
-					<?php echo getStars($item->starRating); ?><br>
-					<br>
 					<small>Warranty rating:</small><br>
 					<?php echo getStars($item->imageSumRating); ?><br>
 				</div>
 				<div class="description-block">
 					<?php echo $promo; ?>
-					<div class="first-info-block">
-						<b>Size:</b> <?php echo $item->displaySize; ?><br>
-						<?php echo $item->clarifier; ?><br>
-						<b>Sidewall Style:</b> <?php echo $item->sidewall; ?><br>
-						<b>Serv. Desc:</b> <?php echo $item->serviceDesc; ?><br>
-						<b>UTQG:</b> <?php echo $item->utqgTreadwear.' '.$item->utqgTraction.' '.$item->utqgTemperature; ?>
-					</div>	
-					<div class="second-info-block">					
-						<div class="price-wrap">
-							<span class="title">
-								<b>Price:</b> 
-							</span>
-							<div class="txt">
-								<?php echo $mark_down; ?> <b class="red price" data-price="<?php echo $item->price; ?>"><?php echo $item->priceFormatted; ?></b> (each) <?php echo $price_txt; ?><br>	
-							</div>
-						</div> 
-						<b>Estimated Availability:</b> <?php echo $item->stockMessage; ?> <br>
-						Shipping Cost/Delivery Date
-					</div>	
-					<div class="third-info-block">
-						<label for="factor">Qty:</label>
-						<select name="factor" class="factor" data-price="<?php echo $item->price; ?>">
-							<option value="1">1</option>
-							<option value="2">2</option>
-							<option value="3">3</option>
-							<option value="4">4</option>
-							<option value="5">5</option>
-							<option value="6">6</option>
-							<option value="7">7</option>
-							<option value="8">8</option>
-						</select>
-					</div>
-					<?php echo $rhp_price; ?>	
+					<?php
+					if(isset($item->rear_item))
+					{
+						$this->wrapRow($item, $id, 'Front' );
+						$this->wrapRow($item->rear_item, $id, 'Rear', 'borderred');
+					}
+					else
+					{
+						$this->wrapRow($item, $id);
+					}
+					?>
 					<div class="footer">
-						<b><a href="#">Additional Tire Information</a></b>
+						<b><a href="#" class="load-tire-modal" data-has-surveys="<?php echo $item->hasSurveys; ?>" data-url="<?php echo $item->url; ?>">Additional Tire Information</a></b>
 						<ul class="menu">
-							<li><a href="#">Product Description</a></li>  | 
-							<li><a href="#">Specs</a></li> | 
-							<li><a href="#">Surveys</a></li>  | 
-							<li><a href="#">Reviews</a></li>  | 
-							<li><a href="#">Tests</a></li>  | 
-							<li><a href="#">Warranty</a></li>							
+							<li><a href="#" class="load-tire-modal" data-has-surveys="<?php echo $item->hasSurveys; ?>" data-url="<?php echo $item->url; ?>">Product Description</a></li>	
+							<?php 
+							if($item->hasSurveys)
+							{
+								?>
+								  | <li><a href="#" class="load-tire-modal" data-has-surveys="<?php echo $item->hasSurveys; ?>" data-url="<?php echo $item->url; ?>">Surveys</a></li>
+								<?php
+							}
+							?>	
 						</ul>
 					</div>		
 				</div>
 				<div class="buttons-block">
 					<i class="fa fa-shopping-cart fa-6" style="font-size: 7em"></i><br>
-					Set of <span class="count">1</span>: <span class="sum red"><?php echo $item->priceFormatted; ?></span><br><br>
-					<a href="#" class="btn">ADD TO CART</a>					
+					<?php if($item->price < 2){ echo "Call 732-313-7396";} else { ?>Set of <span class="count">1</span>: <span class="sum red"><?php echo $item->priceFormatted;} ?></span><br><br>
+				
+					
+					<?php
+					if($item->price < 2){
+					
+					}
+					else
+					{
+					echo do_shortcode('[wp_cart_button name="'.$item->tireMake.' '.$item->tireModel.'" price="'. $item->price .'" quantity="1" u_id="'.$id.'" item_number="'.$this->request['autoYear'].'-'. $this->request['autoMake'].'_'. $this->request['autoModel'].'_'. $this->request['autoModClar'].'_Size: '.$item->displaySize.'_Sidewall: '.$item->sidewall.'_ServDesc: '.$item->serviceDesc.'"]'); 
+					?>		
+	<script type="text/javascript">  
+				function changeQty<?php echo $id;?>(){  
+				var valQty = document.getElementById('qtyselector<?php echo $id;?>').value;  
+				var parentInput = document.getElementById('qty-<?php echo $id;?>');   
+				parentInput.value = valQty;
+				}
+				</script> 			
+			<?php } ?>
 				</div>
 			</div>
 			
@@ -346,12 +339,59 @@ class TiresInDetail extends base{
 		return $var;
 	}
 
+	public function wrapRow($item, $desc_id = '', $size_titile = 'Size', $classes = '')
+	{		
+
+		$mark_down = $item->markdownPrice != '0' ? sprintf('<b>%s</b><br>', $item->markdownPriceFormatted) : '';
+		$price_txt = $item->isOnSpecial ? '<span class="red">Special</span>' : '';
+		$price_txt = $item->isOnClearance ? '<span class="red">Closeout</span>' : $price_txt;
+		?>		
+		<div class="description-block-row <?php echo $classes; ?>">
+			<div class="first-info-block">
+				<b><?php echo $size_titile; ?>:</b> <?php echo $item->displaySize; ?><br>
+				<?php echo $item->clarifier; ?><br>
+				<b>Sidewall Style:</b> <?php echo $item->sidewall; ?><br>
+				<b>Serv. Desc:</b> <?php echo $item->serviceDesc; ?><br>
+				<b>UTQG:</b> <?php echo $item->utqgTreadwear.' '.$item->utqgTraction.' '.$item->utqgTemperature; ?>
+			</div>	
+			<div class="second-info-block">					
+				<div class="price-wrap">
+					<span class="title">
+						<b>Price:</b> 
+					</span>
+					<div class="txt">
+						<?php echo $mark_down; ?> <b class="red price" data-price="<?php echo $item->price; ?>"><?php echo $item->priceFormatted; ?></b> (each) <?php echo $price_txt; ?><br>	
+					</div>
+				</div> 
+				<b>Estimated Availability:</b> <?php echo $item->stockMessage; ?> <br>
+				Shipping Cost/Delivery Date
+			</div>	
+			<div class="third-info-block">
+				<label for="factor">Qty:</label>
+				<select name="factor" id="qtyselector<?php echo $desc_id;?>" onchange="changeQty<?php echo $desc_id;?>()" class="factor" data-price="<?php echo $item->price; ?>">
+					<option value="1">1</option>
+					<option value="2">2</option>
+					<option value="3">3</option>
+					<option value="4">4</option>
+					<option value="5">5</option>
+					<option value="6">6</option>
+					<option value="7">7</option>
+					<option value="8">8</option>
+				</select>
+				
+			  
+			</div>
+		</div>
+		<?php
+	}
+
 	public function getPagination($items)
 	{		
 		$count = count($items);
 		$pages = ceil($count / 10);
 		ob_start();
 		?>
+		<h3 style="float: left">Tires for <?php printf('%s %s %s %s', $this->request['autoYear'], $this->request['autoMake'], $this->request['autoModel'], $this->request['autoModClar']); ?></h3>
 		<div class="pagination-block">
 			<span class="view-all"><a href="#" class="view-all-btn" data-count="<?php echo $count; ?>" >View all <?php echo $count; ?> results</a></span>
 			<span> |   View Per Page:</span>

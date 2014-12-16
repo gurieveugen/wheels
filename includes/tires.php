@@ -33,8 +33,7 @@ class Tires extends base{
 		$dom       = new DOMDocument();
 		$tr_dom    = new DOMDocument();	
 		$url       = self::SIZES_URL.$this->request_http;
-		$html      = $this->fileGetContentsCurl($url, '', false);		
-		$old_link  = '';
+		$html      = $this->fileGetContentsCurl($url, '', false);
 		$dom->loadHTML($html);
 		$xpath = new DOMXPath($dom);
 
@@ -58,10 +57,9 @@ class Tires extends base{
 			}
 			else
 			{
-				$link = $old_link;
+				$link = '';
 			}
 
-			$old_link    = $link;
 			$items[] = array(
 				'a' => $link,
 				'size' => $size->item(0)->nodeValue,
@@ -77,7 +75,7 @@ class Tires extends base{
 	 * @return string       --- html code
 	 */
 	public function wrapItems($items)
-	{
+	{		
 		if(!$items) return $this->loadTemplatePart('notfound');
 		$out = '';
 		foreach ($items as &$item) 
@@ -95,11 +93,12 @@ class Tires extends base{
 	public function wrapItem($item)
 	{
 		ob_start();
+		$link = $item['a'] != '' ? sprintf('<a class="btn_orange" href="%s" alt="View all matching">View all matching</a>', $item['a']) : '';
 		?>
 		<tr>
 			<td><b><?php echo $item['description']; ?></b></td>
 			<td><b><?php echo $item['size']; ?></b></td>
-			<td><a href="<?php echo $item['a']; ?>" alt="View all matching">View all matching</a></td>	
+			<td><?php echo $link; ?></td>	
 		</tr>
 		<?php
 		$var = ob_get_contents();
@@ -119,7 +118,7 @@ class Tires extends base{
 			<tr>
 				<th>Description</th>
 				<th>Size</th>
-				<th>Button</th>
+				<th></th>
 			</tr>
 		</thead>
 		<?php

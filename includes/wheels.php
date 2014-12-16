@@ -211,7 +211,7 @@ class Wheels extends Base{
 	private function requestInit($request)
 	{
 		if(!$request) return null;		
-		
+		$tmp = array();
 		foreach ($this->select_fields as $field) 
 		{
 			if(isset($request[$field]))
@@ -256,8 +256,12 @@ class Wheels extends Base{
 	public function wrapItem($item)
 	{		
 		ob_start();
+		$name = $item['description']['value'].$item['text'];
+		$name = str_replace('Finish: ', '|', $name);
+		$name = preg_replace('/<img.*?>/', '', $name);
+		strip_tags($name);		
 		?>
-		<td>
+		<td class="wheel-item" style="position:relative;" data-name="<?php echo $name; ?>" data-id="<?php echo $item['index']; ?>" data-price="0">
 			<div class="left-side">
 				<div class="image" data-img-lg="<?php echo $item['wheel_img_lg']; ?>">
 					<img src="<?php echo $item['wheel_img']; ?>" alt="">
@@ -275,6 +279,8 @@ class Wheels extends Base{
 				</span><br>
 				<a href="<?php echo $item['view_on_vehicle']; ?>" class="link view-on-vehicle" target="_blank"><b>View on Vehicle</b></a>
 			</div>
+			<br/>
+			<div class="select_arrow"><span></span> Please click on the size to continue</div>
 			<?php echo $this->wrapItemInfo($item['index'], $item['wheel_info_html']); ?>
 		</td>
 		<?php

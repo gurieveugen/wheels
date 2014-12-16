@@ -23,7 +23,7 @@ class Options{
 	public function __construct($request = null)
 	{
 		$this->_session_start();
-		$this->options_fields = array('r1', 'autoMake', 'autoYear', 'autoModel', 'autoModClar');
+		$this->options_fields = array('autoMake', 'autoYear', 'autoModel', 'autoModClar');
 		$this->saveOptions($request);
 		$this->loadOptions();
 	}
@@ -34,10 +34,10 @@ class Options{
 	 */
 	public function saveOptions($request)
 	{		
-		if(!$request) return;
+		if(!$request) return;			
 		foreach ($this->options_fields as &$opt) 
 		{
-			$result[$opt] = isset($request[$opt]) ? $request[$opt] : null;			
+			$result[$opt] = isset($request[$opt]) && $request[$opt] != null ? $request[$opt] : null;			
 		}
 		$_SESSION[self::SESSION_FIELD] = $result;
 	} 
@@ -56,8 +56,7 @@ class Options{
 	 */
 	public function loadOptions()
 	{
-		$defaults = array(
-			'r1'          => '', 
+		$defaults = array(			
 			'autoMake'    => '', 
 			'autoYear'    => '', 
 			'autoModel'   => '', 

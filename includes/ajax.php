@@ -6,6 +6,7 @@ require($_SERVER["DOCUMENT_ROOT"].'/wp-blog-header.php');
 require_once 'shop.php';
 require_once 'view_on_vehicle.php';
 require_once 'change_vehicle_color.php';
+require_once 'single_tire.php';
 
 header("HTTP/1.1 200 OK");
 
@@ -32,6 +33,23 @@ class AJAX{
 		{
 			$this->$action();
 		}		
+	}
+
+	/**
+	 * Get short code from post request
+	 */
+	public function getShortCode()
+	{
+		echo do_shortcode(stripslashes($_POST['short_code']));
+	}
+
+	/**
+	 * Get tire additional info
+	 */
+	public function loadSingleTire()
+	{
+		$single_tire = new SingleTire($_POST);		
+		echo json_encode($single_tire->parse());
 	}
 
 	/**
@@ -110,10 +128,10 @@ class AJAX{
 			'RunFlat'      => $_POST['RunFlat'],
 			'LRR'          => $_POST['LRR'],
 			'priceFilter'  => $_POST['priceFilter']
-			);
+		);
 		$url = self::TIRES_FILTER.'?'.$this->joinArray($query);
-		$cookie = $GLOBALS['shop_page']->getCookieSession();		
-		echo $GLOBALS['shop_page']->fileGetContentsCurl($url, $cookie, false);			
+		$cookie = $GLOBALS['shop_page']->getCookieSession($_POST);		
+		echo $GLOBALS['shop_page']->fileGetContentsCurl($url, $cookie, false);		
 	}
 	
 
