@@ -539,3 +539,18 @@ function getStars($i)
         10 => '<i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i>');
     return $stars[$i];
 }
+
+// ==============================================================
+// Require
+// ==============================================================
+require_once 'includes/__.php';
+
+// ==============================================================
+// My classes
+// ==============================================================
+$cost_calculator = new CostCalculator();
+$cost_calculator->initBackEnd();
+
+
+
+

@@ -1,0 +1,8 @@
+.ui-autocomplete{
+	background: #fff;
+}
+
+.ui-autocomplete li a.ui-state-focus{
+	background: #0074A2;
+	color: #fff;
+}

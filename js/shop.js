@@ -2,24 +2,24 @@ jQuery(document).ready(function(){
 	// =========================================================
 	// Click to accordion item title
 	// =========================================================
-	jQuery('.accordion-toggle').click(function(e){
-		var id = jQuery(this).attr('href');
-		jQuery(id).toggleClass('in');
+	// jQuery('.accordion-toggle').click(function(e){
+	// 	var id = jQuery(this).attr('href');
+	// 	jQuery(id).toggleClass('in');
 
 		
-		if(jQuery(id).hasClass('in'))
-		{
-			jQuery(this).find('b').removeClass('right-caret');
-			jQuery(this).find('b').addClass('down-caret');
-		}
-		else
-		{
-			jQuery(this).find('b').removeClass('down-caret');
-			jQuery(this).find('b').addClass('right-caret');
-		}
+	// 	if(jQuery(id).hasClass('in'))
+	// 	{
+	// 		jQuery(this).find('b').removeClass('right-caret');
+	// 		jQuery(this).find('b').addClass('down-caret');
+	// 	}
+	// 	else
+	// 	{
+	// 		jQuery(this).find('b').removeClass('down-caret');
+	// 		jQuery(this).find('b').addClass('right-caret');
+	// 	}
 
-		e.preventDefault();
-	});
+	// 	e.preventDefault();
+	// });
 
 	// =========================================================
 	// CHANGE #autoMake
@@ -291,6 +291,10 @@ jQuery(document).ready(function(){
     jQuery('#autoModel-row').addClass('hide');
     jQuery('#autoModClar-row').addClass('hide');
     jQuery('#autoMake :nth-child(1)').attr("selected", "selected");
+    // ==============================================================
+    // 
+    // ==============================================================
+    jQuery(".collapse").collapse()
 	
 });
 

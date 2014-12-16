@@ -173,6 +173,17 @@ form.controls-block section.selects button.btn-orange{
 	padding: 0 0 20px 0;
 }
 
+.products .products-inner{
+	padding: 40px;
+}
+
+.products .products-inner .row,
+.products .products-inner .span8,
+.products .products-inner .span3,
+.products .products-inner .span2{
+	margin: 0;
+}
+
 .products .left-content{
 	width: 213px;
 	margin: 20px;
@@ -1104,6 +1115,25 @@ bottom: 20px;
 	float:right;margin-top:20px;
 }
 
+.cart-block .wpsps_compact_cart.wpsps-cart-wrapper{
+	padding: 0px;
+	float: left;
+	display: block;
+	width: auto;
+	min-width: 0px;
+	background: none repeat scroll 0% 0% transparent;
+	border: medium none;
+	margin: -3px 0px 0px 3px;
+}
+
+.cart-block .wpsps_compact_cart.wpsps-cart-wrapper .wpsps_compact_cart_container{
+	margin: 0;
+	padding: 0;
+}
+
+.cart-block .wpsps_compact_cart.wpsps-cart-wrapper .wpsps_compact_cart_container .wpsps_compact_cart_price{
+	display: block;
+}
 
 
 @media(max-width:767px){
@@ -1131,3 +1161,12 @@ bottom: 20px;
         margin: 10px 0;
     }
 }
+
+.accordion-heading .accordion-toggle h1{
+	margin: 0;
+	padding: 0;
+}
+
+
+
+
