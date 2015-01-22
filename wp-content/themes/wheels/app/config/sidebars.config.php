@@ -8,15 +8,12 @@ return array(
 	* Add as many as you want, watch-out your commas!
 	*/
 	array(
-
-		'name'			=> __('First sidebar', THEMOSIS_THEME_TEXTDOMAIN),
-		'id'			=> 'first-sidebar',
-		'description'	=> __('Area of first sidebar', THEMOSIS_THEME_TEXTDOMAIN),
-		'before_widget'	=> '<div>',
-		'after_widget'	=> '</div>',
-		'before_title'	=> '<h2>',
-		'after_title'	=> '</h2>'
-
+		'id'            => 'home-sidebar',
+		'name'          => __('Home Sidebar', THEMOSIS_THEME_TEXTDOMAIN),
+		'description'	=> __('Area of home sidebar', THEMOSIS_THEME_TEXTDOMAIN),
+		'before_widget' => '<div class="widget %2$s" id="%1$s">',
+		'after_widget'  => '</div>',
+		'before_title'  => '<h3>',
+		'after_title'   => '</h3>'
 	)
-
 );

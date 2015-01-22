@@ -18,17 +18,3 @@ add_theme_support(
 		'comment-list'
 	) 
 );
-
-// ==============================================================
-// Sidebars
-// ==============================================================
-register_sidebar(
-	array(
-		'id'            => 'right-sidebar',
-		'name'          => 'Right Sidebar',
-		'before_widget' => '<div class="widget %2$s" id="%1$s">',
-		'after_widget'  => '</div>',
-		'before_title'  => '<h3>',
-		'after_title'   => '</h3>'
-	)
-);
